@@ -14,7 +14,8 @@ function CustomForm(props){
                     <button className="text-blue-700" onClick={[props.typeForm.fctRender]}>{props.typeForm.messageLinkBottom}</button>
                 </div>
             </div>
-        </div>);
+        </div>
+    );
 }
 
 

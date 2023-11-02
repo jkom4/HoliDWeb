@@ -1,24 +1,30 @@
-export {CustomInput,TypeInput}
-function CustomInput(props){
+export {CustomInput}
+const fixedInputClass="rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-grey-800 focus:border-grey-800 focus:z-10 sm:text-sm"
+
+function CustomInput({
+                          handleChange,
+                          value,
+                          id,
+                          type,
+                          name,
+                          placeholder,
+                          isRequired = false,
+                          autocomplete = false,
+                          customClass
+                     }){
     return(
-        <input
-            type={props.typeInput.type}
-            className="block border border-grey-800 w-full p-3 rounded mb-4"
-            id={props.typeInput.name}
-            name={props.typeInput.name}
-            placeholder={props.typeInput.placeholder}
-            required={props.typeInput.required}
-            autoComplete={props.typeInput.autocomplete}
-            onInput={(e) => {props.store.set(props.typeInput.name, e.target.value)}}
-        />
+        <div className="my-5">
+            <input
+                onChange={handleChange}
+                value={value}
+                id={id}
+                name={name}
+                type={type}
+                required={isRequired}
+                autoComplete={autocomplete}
+                className={fixedInputClass+customClass}
+                placeholder={placeholder}
+            />
+        </div>
     )
-}
-class TypeInput {
-    constructor(type, name, placeholder, required, autocomplete) {
-        this.type = type;
-        this.name = name;
-        this.placeholder = placeholder;
-        this.required = required;
-        this.autocomplete = autocomplete;
-    }
 }
