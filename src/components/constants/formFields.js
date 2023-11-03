@@ -40,7 +40,7 @@ const contactFields=[
     },
     {
 
-        id:"email-address",
+        id:"emailaddress",
         name:"email",
         type:"email",
         autoComplete:true,

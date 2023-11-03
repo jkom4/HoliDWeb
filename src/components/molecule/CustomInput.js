@@ -9,7 +9,6 @@ function CustomInput({
                           name,
                           placeholder,
                           isRequired = false,
-                          autocomplete = false,
                           customClass
                      }){
     return(
@@ -21,7 +20,6 @@ function CustomInput({
                 name={name}
                 type={type}
                 required={isRequired}
-                autoComplete={autocomplete}
                 className={fixedInputClass+customClass}
                 placeholder={placeholder}
             />
