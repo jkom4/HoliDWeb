@@ -1,103 +1,121 @@
-const loginFields=[
+const loginFields = [
     {
-        labelText:"Email address",
-        labelFor:"email-address",
-        id:"email-address",
-        name:"email",
-        type:"email",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Email address"
+        labelText: "Email address",
+        labelFor: "email-address",
+        id: "email-address",
+        name: "email",
+        type: "email",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Email"
     },
     {
-        labelText:"Password",
-        labelFor:"password",
-        id:"password",
-        name:"password",
-        type:"password",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Password"
+        labelText: "Password",
+        labelFor: "password",
+        id: "password",
+        name: "password",
+        type: "password",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Mot de passe"
     }
 ]
 
-const contactFields=[
+const contactFields = [
     {
-        id:"name",
-        name:"name",
-        type:"text",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Votre Nom"
+        id: "name",
+        name: "name",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Votre Nom"
     },
     {
-        id:"firstname",
-        name:"firstname",
-        type:"text",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Votre Prenom"
-    },
-    {
-
-        id:"emailaddress",
-        name:"email",
-        type:"email",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Email address"
+        id: "firstname",
+        name: "firstname",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Votre Prenom"
     },
     {
 
-        id:"message",
-        name:"message",
-        type:"text",
-        autoComplete:false,
-        isRequired:true,
-        placeholder:"Votre message"
+        id: "emailaddress",
+        name: "email",
+        type: "email",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Votre adresse email"
+    },
+    {
+        id: "message",
+        name: "message",
+        type: "text",
+        autoComplete: false,
+        isRequired: true,
+        placeholder: "Votre message"
     }
 ]
-const signupFields=[
+const signupFields = [
     {
-        labelText:"Username",
-        labelFor:"username",
-        id:"username",
-        name:"username",
-        type:"text",
-        autoComplete:true,
-        isRequired:true,
-        placeholder:"Username"
+        id: "name",
+        name: "name",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Nom"
     },
     {
-        labelText:"Email address",
-        labelFor:"email-address",
-        id:"email-address",
-        name:"email",
-        type:"email",
-        autoComplete:"email",
-        isRequired:true,
-        placeholder:"Email address"
+        id: "firstname",
+        name: "firstname",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Prénom"
     },
     {
-        labelText:"Password",
-        labelFor:"password",
-        id:"password",
-        name:"password",
-        type:"password",
-        autoComplete:"current-password",
-        isRequired:true,
-        placeholder:"Password"
+        id: "email-address",
+        name: "email",
+        type: "email",
+        autoComplete: "email",
+        isRequired: true,
+        placeholder: "Adresse Email"
     },
     {
-        labelText:"Confirm Password",
-        labelFor:"confirm-password",
-        id:"confirm-password",
-        name:"confirm-password",
-        type:"password",
-        autoComplete:"confirm-password",
-        isRequired:true,
-        placeholder:"Confirm Password"
+        id: "password",
+        name: "password",
+        type: "password",
+        autoComplete: "current-password",
+        isRequired: true,
+        placeholder: "Mot de passe"
+    },
+    {
+        id: "confirmPassword",
+        name: "confirmPassword",
+        type: "password",
+        autoComplete: "confirm-password",
+        isRequired: true,
+        placeholder: "Confirmez le mot de passe"
+    }
+]
+const getUserinscritFields = [
+    {
+        id: "dateDebut",
+        name: "dateDebut",
+        type: "date",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Date de début"
+
+    },
+    {
+        id: "dateFin",
+        name: "dateFin",
+        type: "date",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Date de Fin"
     }
 ]
 
-export {loginFields,signupFields,contactFields}
+export {getUserinscritFields,loginFields, signupFields, contactFields}

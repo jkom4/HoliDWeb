@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 
 export default function Header({
+                                   title,
                                    heading,
                                    paragraph,
                                    linkName,
@@ -9,7 +10,7 @@ export default function Header({
     return(
         <div className="mb-10">
             <div className="flex justify-center font-extrabold">
-                HOLIDWEB
+                {title}
             </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 {heading}

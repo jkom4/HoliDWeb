@@ -1,15 +1,13 @@
 import NavBar from "../organism/NavBar";
-import ContactAdmin from "../templates/ContactAdmin";
+
+import Home from "../templates/Home";
 
 
 export default function HomePage() {
     return (
-        <div>
+        <div >
             <NavBar/>
-
-            <ContactAdmin/>
-
-
+            <Home/>
         </div>
 
     )

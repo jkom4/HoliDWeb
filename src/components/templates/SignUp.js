@@ -12,7 +12,11 @@ export default function Signup(){
     const [signupState,setSignupState]=useState(fieldsState);
 
     const handleChange=(e)=>setSignupState({...signupState,[e.target.id]:e.target.value});
+    // Vérification en temps réel si les champs de mot de passe et de confirmation correspondent
+    const password = signupState.password;
+    const confirmPassword = signupState.confirmPassword;
 
+    const passwordMatch = password === confirmPassword;
     const handleSubmit=(e)=>{
         e.preventDefault();
         console.log(signupState)
@@ -32,8 +36,6 @@ export default function Signup(){
                             key={field.id}
                             handleChange={handleChange}
                             value={signupState[field.id]}
-                            labelText={field.labelText}
-                            labelFor={field.labelFor}
                             id={field.id}
                             name={field.name}
                             type={field.type}
@@ -43,6 +45,10 @@ export default function Signup(){
 
                     )
                 }
+            {/* Affichage d'un message si les mots de passe ne correspondent pas en temps réel */}
+            {!passwordMatch && (
+                <p style={{ color: 'red' }}>Les mots de passe ne correspondent pas</p>
+            )}
                 <CustomButton handleSubmit={handleSubmit} text="S'inscrire" />
 
 
