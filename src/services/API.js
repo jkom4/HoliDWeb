@@ -1,0 +1,4 @@
+const apiUrl = ""
+function SignUp(){
+
+}
