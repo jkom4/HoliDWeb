@@ -5,13 +5,13 @@ import {CustomButton} from "../molecule/CustomButton";
 import Header from "../molecule/HeaderForm";
 import emailjs from '@emailjs/browser';
 
-const fields=contactFields;
+
+const fields= contactFields;
 let fieldsState = {};
 fields.forEach(field=>fieldsState[field.id]='');
 
 export default function ContactAdmin(){
     const [contactState,setContactState]=useState(fieldsState);
-    const form = useRef();
 
     const handleChange=(e)=>{
         setContactState({...contactState,[e.target.id]:e.target.value})
@@ -28,6 +28,7 @@ export default function ContactAdmin(){
         emailjs.send('service_j0c53oa', 'template_snvzy7p',templateParams, 'u6h54fqSWVWd4Tc1e')
             .then((result) => {
                 console.log(result.text);
+                alert("Message envoyé " + result.text)
             }, (error) => {
                 console.log(error.text);
             });
@@ -35,7 +36,7 @@ export default function ContactAdmin(){
     }
 
     return(
-        <form ref={form} className="min-h-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <form  className="min-h-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <Header
                     heading="Contacter un administrateur"

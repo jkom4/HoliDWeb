@@ -1,30 +1,67 @@
-export {CustomForm, TypeForm};
+import { useState } from 'react';
+import {CustomInput} from "../molecule/CustomInput";
+import {CustomButton} from "../molecule/CustomButton";
 
 
-function CustomForm(props){
-    return(
-        <div id="contentOfRoot" className="bg-grey-lighter min-h-screen flex flex-col">
-            <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-                <form onSubmit={props.formHandler} id="divForm" className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                    <h1 className="mb-8 text-3xl text-center">{props.typeForm.title}</h1>
-                    {props.typeForm.content}
-                </form>
-                <div className="mt-6">
-                    {props.typeForm.bottomMessage}
-                    <button className="text-blue-700" onClick={[props.typeForm.fctRender]}>{props.typeForm.messageLinkBottom}</button>
-                </div>
-            </div>
-        </div>
-    );
-}
 
-
-class TypeForm{
-    constructor(title, content, bottomMessage, messageLinkBottom, fctRender) {
-        this.title = title;
-        this.content = content;
-        this.bottomMessage = bottomMessage;
-        this.messageLinkBottom = messageLinkBottom;
-        this.fctRender = fctRender;
+export default function CustomForm(props){
+    const [formState,setFormState]=useState(props.fieldsState);
+    const [passwordsMatch, setPasswordsMatch] = useState(true); // Ajout de l'état pour vérifier si les mots de passe correspondent
+    const handleChange=(e)=>{
+        const { id, value } = e.target;
+        setFormState({ ...formState, [id]: value });
+        // Vérification en temps réel si les champs password et confirm password correspondent
+        if (props.isSignUp ) {
+            // Vérification en temps réel si les champs password et confirm password correspondent
+            if (id === 'password') {
+                const confirmPassword = formState.confirmPassword;
+                setPasswordsMatch(value === confirmPassword);
+            } else if (id === 'confirmPassword') {
+                const password = formState.password;
+                setPasswordsMatch(value === password);
+            }
+        }
     }
+
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+        if (props.isSignUp && !passwordsMatch) {
+            // Afficher un message d'erreur ou prendre une autre action si les mots de passe ne correspondent pas
+            console.log("Les mots de passe ne correspondent pas");
+            return;
+        }
+
+        // Vous pouvez maintenant soumettre le formulaire car les mots de passe correspondent (ou que vous êtes dans le contexte de connexion)
+        props.actionSubmit(formState);
+    }
+
+    return(
+        <form className="">
+
+            {
+                props.fields.map(field=>
+                    <CustomInput
+                        key={field.id}
+                        handleChange={handleChange}
+                        value={formState[field.id]}
+                        id={field.id}
+                        name={field.name}
+                        type={field.type}
+                        autoComplete={field.autocomplete}
+                        isRequired={field.isRequired}
+                        placeholder={field.placeholder}
+                    />
+                )
+            }
+
+            {/* Affichage d'un message si les mots de passe ne correspondent pas en temps réel */}
+            { props.isSignUp && !passwordsMatch && (
+                <p style={{ color: 'red' }}>Les mots de passe ne correspondent pas</p>
+            )}
+
+            <CustomButton handleSubmit={handleSubmit} text={props.textSubmit}/>
+
+
+        </form>
+    )
 }

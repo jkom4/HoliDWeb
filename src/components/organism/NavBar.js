@@ -1,6 +1,13 @@
+import {logout, selectCurrentToken, selectCurrentUser} from "../../features/AuthSlice";
+import {useDispatch, useSelector} from "react-redux"
+import {resetVacances} from "../../features/VacancesSlices";
 
 
 export default function NavBar() {
+    const user = useSelector(selectCurrentUser);
+    const token = useSelector(selectCurrentToken)
+    const dispatch = useDispatch();
+
     return (
         <nav className="bg-gray-800">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -26,21 +33,31 @@ export default function NavBar() {
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 <a href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Accueil</a>
-                                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Vacances</a>
+                                <a href="#vacances" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Vacances</a>
                                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">A propos</a>
-                                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</a>
+                                <a href="#contact" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</a>
                             </div>
                         </div>
                     </div>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
+                        {!(user && token)?
 
                          <div className="relative ml-3">
                             <div>
                                 <a href="/login" className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Se Connecter</a>
                             </div>
-
                         </div>
+                            :
+                            <div className="relative ml-3">
+                                <div className="inline-flex ">
+                                    <p className="pr-2 text-white pt-1">Bienvenue {user.nom}</p>
+                                    <a onClick={() => {
+                                        dispatch(logout())
+                                        dispatch(resetVacances())
+                                    }} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Deconnexion</a>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
