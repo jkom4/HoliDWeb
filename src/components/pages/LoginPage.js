@@ -4,13 +4,14 @@ import AuthTemplate from "../templates/AuthTemplate";
 import CustomForm from "../organism/CustomForm";
 import {loginFields} from "../constants/formFields";
 import API from "../../services/API";
-import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {login} from "../../features/AuthSlice";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode"
 import { initVacances} from "../../features/VacancesSlices";
+import {useError} from "../../ErrorContext";
+import Alert from "../molecule/Alert";
 
 const fields=loginFields;
 let fieldsState = {};
@@ -19,7 +20,7 @@ fields.forEach(field=>fieldsState[field.id]='');
 
 
 const LoginPage = () => {
-    const [errMsg, setErrMsg] = useState('')
+    const {errMsg, setErrorMsg} = useError()
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -36,11 +37,11 @@ const LoginPage = () => {
         } catch (err) {
             console.error('Error during sign-in:', err);
              if (err.response === 400) {
-                setErrMsg('Missing Username or Password');
+                setErrorMsg('Missing Username or Password');
             } else if (err.response === 401) {
-                setErrMsg('Unauthorized');
+                setErrorMsg('Unauthorized');
             } else {
-                setErrMsg('Login Failed ' + err );
+                setErrorMsg('Login Failed ' + err );
             }
         }
 
@@ -50,6 +51,8 @@ const LoginPage = () => {
             navbar={<NavBar/>}
             //footer={}
             >
+
+            {errMsg && <Alert message={errMsg} color={'red'}/>}
             <div className="min-h-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
                     <Header
@@ -58,7 +61,6 @@ const LoginPage = () => {
                         linkName="Inscrivez-vous"
                         linkUrl="/signup"
                     />
-                    <p  className={errMsg ? "errmsg text-red-500" : "offscreen"} aria-live="assertive">{errMsg}</p>
                     <CustomForm  fieldsState = {fieldsState}
                                  fields = {fields}
                                  actionSubmit={handleSignIn}

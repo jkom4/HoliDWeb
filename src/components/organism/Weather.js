@@ -45,7 +45,7 @@ const Weather =  (latlng) => {
 
                 <div className="flex justify-between">
                     <div className="flex flex-col">
-                        <span className="text-6xl font-bold">{`${weatherCurrent.list[0].main.temp} °C`}</span>
+                        <span className="text-3xl font-bold">{`${weatherCurrent.list[0].main.temp} °C`}</span>
                         <span className="font-semibold mt-1 text-gray-500">{`${weatherCurrent.city.name}, ${weatherCurrent.city.country}`}</span>
                     </div>
                     <div className="inline-block">
@@ -57,7 +57,7 @@ const Weather =  (latlng) => {
 
                 <div className="flex justify-between mt-12">
                     {next5Hours.map((forecast) => (
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col mr-2 items-center">
                             <span className="font-semibold text-lg">{forecast.main.temp}°C</span>
                             <img src={`http://openweathermap.org/img/w/${forecast.weather[0].icon}.png`} alt="weather icon" />
                             <span className="font-semibold mt-1 text-sm">{forecast.dt_txt.split(' ')[1]}</span>
@@ -68,13 +68,13 @@ const Weather =  (latlng) => {
             {futureDay &&
 
                 <div
-                    className="flex flex-col space-y-6 w-full max-w-screen-sm bg-white mx-4 p-1  rounded-xl ring-8 ring-white ring-opacity-40">
+                    className="flex flex-col space-y-6 w-full max-w-screen-sm bg-white p-1  rounded-xl ring-8 ring-white ring-opacity-40">
 
 
                         {futureDay.map((dayForecast) => (
 
                         <div className="flex justify-between items-center">
-                            <span className="font-semibold text-sm w-1/4">{dayForecast[0].dt_txt.split(' ')[0]}</span>
+                            <span className="font-semibold text-sm ">{dayForecast[0].dt_txt.split(' ')[0]}</span>
                             <img src={`http://openweathermap.org/img/w/${dayForecast[0].weather[0].icon}.png`} alt="weather icon" />
                             <span className="font-semibold text-sm w-1/4 text-right">{dayForecast[0].main.temp}°C</span>
                         </div>

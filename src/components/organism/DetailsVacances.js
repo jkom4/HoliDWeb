@@ -1,9 +1,12 @@
 import AddParticipantForm from "./AddParticipantForm";
 import Weather from "./Weather";
+import AddActivite from "./AddActivite";
+import Modal from "./Modal";
+import DetailsActivite from "./DetailsActivite";
 
 const DetailsVacances = ({item}) => (
     <section className="flex items-center bg-gray-100 font-poppins  ">
-        <div className="justify-center flex-1 max-w-6xl px-4 py-6 mx-auto mb-2 lg:py-4 md:px-6">
+        <div className="justify-center flex-1 max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
             <div className="p-6 bg-gradient-to-br from-blue-200 via-purple-200 to-white-200">
                 <Weather lat={item.lieu.latitude} lon={item.lieu.longitude}/>
             </div>
@@ -23,20 +26,18 @@ const DetailsVacances = ({item}) => (
                         {item.activites.map(activite => (
                             <div className="flex items-center mb-3">
                                 <div className="flex mr-2 text-xs text-black ">
-                                    <span className="mr-1">{activite.dateDebut}</span>
+                                    <span className="mr-1">{new Date(activite.dateDebut).toLocaleDateString()}</span>
 
                                 </div>
-                                <div className="w-full h-3 mr-2 bg-gray-200 md:w-80" >
-                                   <span className="mr-1">{activite.dateDebut}</span>
+                                <div className="flex mr-2 text-xs text-black" >
+                                   <span className="mr-1">{new Date(activite.dateFin).toLocaleDateString()}</span>
                                 </div>
-                                <div className="flex justify-end text-xs font-medium ">{activite.descrition}</div>
+                                <div className="flex justify-end text-xs font-medium ">{activite.description}</div>
                             </div>
                         ))}
                     </div>
-                    <div className="items-center ">
-                        <a href="#" className="px-4 py-2 text-xs text-gray-100 bg-blue-500 hover:bg-blue-600 ">
-                            Nouvelle activité</a>
-                    </div>
+
+                    <Modal buttonToggle="Nouvelle activité" title="Ajouter une activité"> <DetailsActivite item = {item}/></Modal>
                 </div>
                 <div className="p-6 mb-6 bg-white">
                     <h2 className="mb-6 text-xl font-semibold text-left font-gray-600 ">

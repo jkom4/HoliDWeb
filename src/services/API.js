@@ -15,7 +15,7 @@ class API {
 
     static  SignUp(signUpFields) {
         const datalogin = {
-            "email": signUpFields.emailAddress,
+            "email": signUpFields.email,
             "nom": signUpFields.name,
             "passwd": signUpFields.password,
             "prenom": signUpFields.firstname
@@ -44,9 +44,10 @@ class API {
 
     static SignIn(signinFields) {
         const datalogin = {
-            "email": signinFields.emailAddress,
+            "email": signinFields.email,
             "passwd": signinFields.password
         }
+        console.log(datalogin)
         return fetch(`/user/signin`,
             {
                 method: 'POST',
@@ -134,17 +135,12 @@ class API {
         //Ajouter les parametres au templates
         const templateParams = {
             from_name: contactState.name,
-            from_email: contactState.emailaddress,
+            from_email: contactState.email,
             to_name: "HolidWeb",
-            message: contactState.message
+            message: contactState.message,
+            to_email : contactState.to_email
         }
-        emailjs.send('service_j0c53oa', 'template_snvzy7p', templateParams, 'u6h54fqSWVWd4Tc1e')
-            .then((result) => {
-                console.log(result.text);
-                alert("Message envoyé " + result.text)
-            }, (error) => {
-                console.log(error.text);
-            });
+        return emailjs.send('service_j0c53oa', 'template_snvzy7p', templateParams, 'u6h54fqSWVWd4Tc1e');
 
     }
 
@@ -227,9 +223,92 @@ class API {
             })
     }
 
+    static async addParticipantActivite(email,id) {
+        const storedToken = localStorage.getItem('token');
+
+        const datafields = {
+            "email": email,
+            "id": id
+        }
+        console.log(datafields)
+        return fetch(`/activite/addParticipant`,
+            {
+                method: 'POST',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${storedToken}`
+
+                },
+                body: JSON.stringify(
+                    datafields)
+            }).then(response => {
+            if (!response.ok) {
+
+                console.log(response)
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                return response.json()
+            }
+        })
+            .then(
+                data => data
+            )
+            .catch((e) => {
+                console.error('Error during add-Participant Activité:', e);
+                throw e; // Propagate the error for further handling
+            })
+    }
     static  currentweather(latlng){
         return  fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latlng.lat}&lon=${latlng.lon}&cnt=30&units=metric&lang=fr&appid=${API_keyCurrentWeather}`)
             .then(response => response.json())
+
+    }
+
+
+    static AddActivite(fiedls,lieu,idVac) {
+        const storedToken = localStorage.getItem('token');
+
+        const datafiels = {
+            "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
+            "dateFin": convertToOffsetDateTime(fiedls.dateFin),
+            "description": fiedls.description,
+            "idVacance":idVac,
+            "lieu": lieu,
+            "nom": fiedls.nom,
+        }
+        console.log(datafiels)
+        return fetch(`/activite/add`,
+            {
+                method: 'POST',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${storedToken}`
+
+                },
+                body: JSON.stringify(
+                    datafiels)
+            }).then(response => {
+            if (!response.ok) {
+                console.log(response)
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                console.log(response)
+                return response.json()
+            }
+        })
+            .then(
+                data =>{
+
+                    console.log(data)
+                   return data
+                }
+            )
+            .catch((e) => {
+                console.error('Error during add-Activite:', e);
+                throw e; // Propagate the error for further handling
+            })
 
     }
 }

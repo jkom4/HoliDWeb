@@ -25,6 +25,7 @@ export default function UserInscrit(){
         try {
             const userData = await API.nbrUser(userIncritState);
             dispatch( searchUser({ ...userData }));
+            console.log(userData)
         } catch (err) {
             setErrMsg('Error during fetch nbr User:'+ err);
         }
@@ -54,8 +55,17 @@ export default function UserInscrit(){
             </div>
             <p  className={errMsg ? "errmsg text-red-500" : "offscreen"}  aria-live="assertive" >{errMsg}</p>
             <div className=" grid grid-cols-2 gap-2 col-start-2 col-end-6 ">
-                <p className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur inscrit : {userInscrit} </p>
-                <p className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur en vacance : {userInHoliday} </p>
+                <p className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur inscrit : {userInscrit ? userInscrit : 0} </p>
+                <ul className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur en vacance :
+                    { userInHoliday ? userInHoliday.map(data => (
+                        <li className="ml-14">
+                            {data.nbrUserInHoliday} en {data.pays}
+                        </li>
+                    ))
+                     : " 0"
+                    }
+
+                </ul>
 
             </div>
         </div>

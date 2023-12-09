@@ -8,7 +8,7 @@ export const userSlice = createSlice({
     reducers: {
         searchUser: (state, action) => {
             state.userInscrit = action.payload.nbrUserTotal
-            state.userInHolliday = action.payload.nbrUserInHoliday
+            state.userInHolliday = action.payload.nbrUserInHolidayByCountry
 
         }
     }

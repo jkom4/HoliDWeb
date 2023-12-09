@@ -9,6 +9,7 @@ import {login} from "../../features/AuthSlice";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {initVacances} from "../../features/VacancesSlices";
+import Alert from "../molecule/Alert";
 
 const fields=signupFields;
 let fieldsState = {};
@@ -28,6 +29,19 @@ const SignUpPage = () => {
             dispatch(initVacances(userData.vacances));
             console.log(userData);
             // Other logic after successful sign-up
+            const contactUser = {
+                from_name: "HolidWeb",
+                from_email: "j.komwabo@student.helmo.be",
+                to_name: userData.nom,
+                message: "Nous vous souhaitons la bienvenue ",
+                to_email : userData.email
+            }
+            API.SendContact(contactUser).then((result) => {
+                console.log(result.text);
+                setErrMsg("Message envoyé " + result.text)
+            }, (error) => {
+                setErrMsg("Erreur " + error.text)
+            });
             navigate('/')
         } catch (err) {
             console.error('Error during sign-Up:', err);
@@ -46,6 +60,7 @@ const SignUpPage = () => {
             navbar={<NavBar/>}
             //footer={}
         >
+            {errMsg && <Alert message={errMsg} color="red"/>}
             <div className="min-h-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
                     <Header

@@ -3,26 +3,25 @@ import {useEffect, useState} from "react";
 import API from "../../services/API";
 import CustomForm from "./CustomForm";
 import GooglePlacesAutocomplete, {geocodeByAddress} from 'react-google-places-autocomplete';
-import {addVacances} from "../../features/VacancesSlices";
+import {addActivites} from "../../features/VacancesSlices";
 import {useDispatch} from "react-redux";
 
 const fields=addVacancesFields;
 let fieldsState = {};
 fields.forEach(field=>fieldsState[field.id]='');
-const AddVacanceForm = () => {
-        const [errMsg, setErrMsg] = useState('')
-        const [valueAutoComplete,setValueAutoComplete] = useState(null)
-        const [geocodeResults, setGeocodeResults] = useState(null);
-        const dispatch = useDispatch();
+const AddActivite = ({idVac}) => {
+    const [errMsg, setErrMsg] = useState('')
+    const [valueAutoComplete,setValueAutoComplete] = useState(null)
+    const [geocodeResults, setGeocodeResults] = useState(null);
+    const dispatch = useDispatch();
 
     const handleSignIn = async (formState) => {
         try {
 
-            const newVacance = await API.AddVacance(formState,geocodeResults);
-            dispatch(addVacances({ ...newVacance }));
-            console.log(newVacance);
-            // Other logic after successful sign-in
-           // navigate('/')
+            const newActivite = await API.AddActivite(formState,geocodeResults,idVac);
+            dispatch(addActivites({ newActivite,idVac }));
+            console.log(newActivite);
+
         } catch (err) {
             if (err.response === 400) {
                 setErrMsg('Missing Username or Password');
@@ -59,7 +58,7 @@ const AddVacanceForm = () => {
             }
             console.log(lieu)
             setGeocodeResults(lieu)
-                //console.log(results);
+            //console.log(results);
         } catch (error) {
             console.error(error);
         }
@@ -94,4 +93,4 @@ const AddVacanceForm = () => {
 
 }
 
-export default AddVacanceForm;
+export default AddActivite;

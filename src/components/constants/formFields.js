@@ -1,7 +1,7 @@
 const loginFields = [
     {
 
-        id: "emailAddress",
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: true,
@@ -39,7 +39,7 @@ const contactFields = [
     },
     {
 
-        id: "emailaddress",
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: true,
@@ -73,7 +73,7 @@ const signupFields = [
         placeholder: "Prénom"
     },
     {
-        id: "emailAddress",
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: "email",
