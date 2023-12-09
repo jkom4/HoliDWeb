@@ -1,8 +1,7 @@
 const loginFields = [
     {
-        labelText: "Email address",
-        labelFor: "email-address",
-        id: "email-address",
+
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: true,
@@ -40,7 +39,7 @@ const contactFields = [
     },
     {
 
-        id: "emailaddress",
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: true,
@@ -74,7 +73,7 @@ const signupFields = [
         placeholder: "Prénom"
     },
     {
-        id: "email-address",
+        id: "email",
         name: "email",
         type: "email",
         autoComplete: "email",
@@ -117,5 +116,59 @@ const getUserinscritFields = [
         placeholder: "Date de Fin"
     }
 ]
+const addVacancesFields = [
+    {
+        id: "nom",
+        name: "nom",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Intitulé"
+    },
+    {
+        id: "description",
+        name: "description",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Description"
+    },
+    {
+        id: "dateDebut",
+        name: "dateDebut",
+        type: "date",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Date de début"
 
-export {getUserinscritFields,loginFields, signupFields, contactFields}
+    },
+    {
+        id: "dateFin",
+        name: "dateFin",
+        type: "date",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Date de Fin"
+    }
+]
+export const addParticipantFields = [
+    {
+        id: "vacance",
+        name: "vacance",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Vacance"
+    },
+    {
+        id: "participant",
+        name: "participant",
+        type: "text",
+        autoComplete: true,
+        isRequired: true,
+        placeholder: "Participant"
+    },
+
+]
+
+export {getUserinscritFields,loginFields, signupFields, contactFields, addVacancesFields}
