@@ -10,7 +10,6 @@ const Weather =  (latlng) => {
         const obtenirWeatherCurrent = async () => {
             try {
                 const data = await API.currentweather(latlng);
-                console.log(data)
                 // Extraire les données des 5 heures suivantes
                 const data5Hours = data.list.slice(1, 6);
                 setWeatherCurrent(data);

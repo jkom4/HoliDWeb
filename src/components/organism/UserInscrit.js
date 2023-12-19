@@ -25,7 +25,6 @@ export default function UserInscrit(){
         try {
             const userData = await API.nbrUser(userIncritState);
             dispatch( searchUser({ ...userData }));
-            console.log(userData)
         } catch (err) {
             setErrMsg('Error during fetch nbr User:'+ err);
         }
@@ -33,7 +32,7 @@ export default function UserInscrit(){
     }
     return (
         <div className="grid grid-cols-5 gap-4">
-            <div className=" grid grid-cols-3 gap-4 col-start-2 col-end-5 ">
+            <div className=" grid grid-cols-3 gap-4 col-start-2 col-end-6 ">
                 {
                     fields.map(field=>
                         <CustomInput

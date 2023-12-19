@@ -1,143 +1,107 @@
-import React from 'react';
-import {ReactAgenda, ReactAgendaCtrl, guid, Modal} from 'react-agenda';
-import {connect, useSelector} from "react-redux";
-import {selectCurrentUser} from "../../features/AuthSlice";
+import React, {useCallback, useState} from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar'
+
+
+import moment from 'moment'
 import {selectVacances} from "../../features/VacancesSlices";
-
-require('moment/locale/fr.js'); // this is important for traduction purpose
-
-var colors = {
-    'color-1': "rgba(102, 195, 131 , 1)",
-    "color-2": "rgba(242, 177, 52, 1)",
-    "color-3": "rgba(235, 85, 59, 1)"
-}
+import {useSelector} from "react-redux";
+import Modal from "./Modal";
+import {selectCurrentUser} from "../../features/AuthSlice";
+const localizer = momentLocalizer(moment)
 
 
-var now = new Date();
+const Agenda = ({vacances}) =>  {
+    const [showModal, setShowModal] = useState(false);
+    const [currentActivite, setCurrentActivite] = useState({});
+    const user = useSelector(selectCurrentUser);
+    const convertirVacancesEnItems = (vacances) => {
+        const items = [];
+        // vacances = []
 
-var items = [
-    {
-        _id: guid(),
-        name: 'Meeting , dev staff!',
-        startDateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0),
-        endDateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0),
-        classes: 'color-1'
-    },
-    {
-        _id: guid(),
-        name: 'Working lunch , Holly',
-        startDateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 11, 0),
-        endDateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 13, 0),
-        classes: 'color-2 color-3'
-    },
+        vacances.forEach((vacance) => {
+            vacance.activites.forEach((activite) => {
+                // Vérifier si l'utilisateur participe à l'activité
+                const userParticipates = activite.participants.some(
+                    (participant) => participant.id === user.id
+                );
+                if (userParticipates) {
+                    const item = {
+                        title: activite.nom,
+                        start: new Date(activite.dateDebut),
+                        end: new Date(activite.dateFin),
+                        current: activite
+                    };
+                    items.push(item);
+                }
+            });
 
-];
-
-const convertirVacancesEnItems = (vacances) => {
-    const items = [];
-   // vacances = []
-    // Logique pour attribuer des classes de couleur
-    const classes = ['color-1', 'color-2', 'color-3'];
-    let classeIndex = 0;
-
-     vacances.forEach((vacance) => {
-        vacance.activites.forEach((activite) => {
-            const item = {
-                _id: activite.id,
-                name: activite.nom,
-                startDateTime: new Date(activite.dateDebut),
-                endDateTime: new Date(activite.dateFin),
-                classes: classes[classeIndex]
-
-            };
-            items.push(item);
         });
 
-        // Incrémente l'index pour passer à la couleur suivante
-        classeIndex = (classeIndex + 1) % classes.length;
+        return items;
+    };
+    const handleSelectEvent = useCallback(
+        (event) => {
+            setShowModal(true);
+            setCurrentActivite(event.current)
 
+        } ,
+        []
+    )
+    const itemsVacances = convertirVacancesEnItems(vacances);
+    return (
+        <>
+            <Calendar
+                localizer={localizer}
+                events={itemsVacances}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 500 }}
+                onSelectEvent={handleSelectEvent}
+            />
+            {showModal && currentActivite &&
+                <div className=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div className="relative  w-auto my-6 mx-auto max-w-xl">
+                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
 
-    });
+                            <div className="flex items-center  justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                <h3 className="text-lg font-semibold text-gray-900 ">
+                                    Details Activité
+                                </h3>
 
-    return items;
-};
-
-class Agenda extends React.Component {
-
-    constructor(props) {
-
-        super(props);
-        const itemsVacances = convertirVacancesEnItems(this.props.vacances);
-        this.state = {
-            items: itemsVacances,
-            selected: [],
-            cellHeight: 30,
-            showModal: false,
-            locale: "fr",
-            rowsPerHour: 2,
-            numberOfDays: 10,
-            startDate: new Date()
-        }
-        this.handleCellSelection = this.handleCellSelection.bind(this)
-        this.handleItemEdit = this.handleItemEdit.bind(this)
-        this.handleRangeSelection = this.handleRangeSelection.bind(this)
-    }
-
-    handleCellSelection(item) {
-        console.log('handleCellSelection', item)
-    }
-
-    handleItemEdit(item) {
-        console.log('handleItemEdit', item)
-        this.setState({showModal: true})
-    }
-
-    handleRangeSelection(item) {
-        console.log('handleRangeSelection', item)
-    }
-
-    render() {
-        return (
-            <div>
-
-                <ReactAgenda
-                    minDate={now}
-                    maxDate={new Date(now.getFullYear(), now.getMonth() + 3)}
-                    disablePrevButton={false}
-                    startDate={this.state.startDate}
-                    cellHeight={this.state.cellHeight}
-                    locale={this.state.locale}
-                    items={this.state.items}
-                    numberOfDays={this.state.numberOfDays}
-                    rowsPerHour={this.state.rowsPerHour}
-                    itemColors={colors}
-                    autoScale={false}
-                    fixedHeader={true}
-                    onItemEdit={this.handleItemEdit.bind(this)}
-                    onCellSelect={this.handleCellSelection.bind(this)}
-                    onRangeSelection={this.handleRangeSelection.bind(this)}/>
-                {
-                    this.state.showModal ?
-                        <Modal clickOutside={() => this.setState({showModal: false})}>
-
-                            <div className="modal-content">
-                                <ReactAgendaCtrl
-                                    items={this.state.items}
-                                    itemColors={colors}
-                                    selectedCells={this.state.selected}
-                                    Addnew={this.addNewEvent}
-                                    edit={this.editEvent}/>
+                                <button type="button" onClick={() => setShowModal(false)} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                    </svg>
+                                    <span className="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                            <div className="p-4">
+                                <p><span className="font-semibold">Titre : </span>{currentActivite.nom}</p>
+                                <p><span className="font-semibold">Description : </span>{currentActivite.description}</p>
+                                <p><span className="font-semibold">Date de debut : </span>{new Date(currentActivite.dateDebut).toLocaleDateString() + " " + new Date(currentActivite.dateDebut).toLocaleTimeString() }</p>
+                                <p><span className="font-semibold">Date de debut : </span>{new Date(currentActivite.dateFin).toLocaleDateString() + " " + new Date(currentActivite.dateFin).toLocaleTimeString() }</p>
+                                <p><span className="font-semibold">Lieu : </span>{`${currentActivite.lieu.rue} ${currentActivite.lieu.rueNumero},  ${currentActivite.lieu.codePostal}  ${currentActivite.lieu.ville}  ${currentActivite.lieu.pays}`}</p>
                             </div>
 
-                        </Modal> : ''
-                }
-            </div>
-        );
-    }
+
+                            <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                                <button
+                                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Close
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </>
+
+    )
+
 }
 
-const mapStateToProps = state => ({
-    vacances: selectVacances(state) ,
-});
-
-export default connect(mapStateToProps)(Agenda);
+export default Agenda;

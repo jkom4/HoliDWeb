@@ -20,7 +20,6 @@ const AddVacanceForm = () => {
 
             const newVacance = await API.AddVacance(formState,geocodeResults);
             dispatch(addVacances({ ...newVacance }));
-            console.log(newVacance);
             // Other logic after successful sign-in
            // navigate('/')
         } catch (err) {
@@ -57,7 +56,6 @@ const AddVacanceForm = () => {
                 ville: firstResult.address_components.find(component => component.types.includes('locality'))?.long_name || 'Unknown',
 
             }
-            console.log(lieu)
             setGeocodeResults(lieu)
                 //console.log(results);
         } catch (error) {

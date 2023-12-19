@@ -110,7 +110,7 @@ class API {
 
     static nbrUser(formFields) {
 
-        return fetch(`/user/nbrUserAndNbrUserInHolidayByRange?dateDebut=${convertToOffsetDateTime(formFields.dateDebut)}&dateFin=${convertToOffsetDateTime(formFields.dateFin)}`,
+        return fetch(`/user/nbrUserAndNbrUserInHolidayForADate?dateTime=${convertToOffsetDateTime(formFields.dateDebut)}`,
             {
                 method: 'GET',
                 mode: "cors",
@@ -294,22 +294,50 @@ class API {
                 console.log(response)
                 throw new Error(`HTTP error! Status: ${response.status}`);
             } else {
-                console.log(response)
                 return response.json()
             }
         })
-            .then(
-                data =>{
-
-                    console.log(data)
-                   return data
-                }
-            )
+            .then(data =>data)
             .catch((e) => {
                 console.error('Error during add-Activite:', e);
                 throw e; // Propagate the error for further handling
             })
 
+    }
+
+    static async ModifActivite(dateDebut, dateFin, id) {
+        const storedToken = localStorage.getItem('token');
+
+        const datafiels = {
+            "dateDebut": convertToOffsetDateTime(dateDebut),
+            "dateFin": convertToOffsetDateTime(dateFin),
+            "id": id,
+        }
+        console.log(datafiels)
+        return fetch(`/REST_AHME_VERD_WABO/activite/changeDateTimeOfActivite`,
+            {
+                method: 'POST',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${storedToken}`
+
+                },
+                body: JSON.stringify(
+                    datafiels)
+            }).then(response => {
+            if (!response.ok) {
+                console.log(response)
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                return response.json()
+            }
+        })
+            .then(data =>data)
+            .catch((e) => {
+                console.error('Error during add-Activite:', e);
+                throw e; // Propagate the error for further handling
+            })
     }
 }
 

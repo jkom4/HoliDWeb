@@ -16,6 +16,15 @@ const AddActivite = ({idVac}) => {
     const dispatch = useDispatch();
 
     const handleSignIn = async (formState) => {
+        // Vérification que dateFin et heureFin sont supérieurs à dateDebut et heureDebut
+        const dateDebut = new Date(`${formState.dateDebut} `);
+        const dateFin = new Date(`${formState.dateFin} `);
+
+        if (dateFin <= dateDebut) {
+            // Afficher un message d'erreur ou prendre d'autres mesures nécessaires
+            setErrMsg("La date de fin doit être supérieure à la date de début.");
+            return;
+        }
         try {
 
             const newActivite = await API.AddActivite(formState,geocodeResults,idVac);
@@ -85,6 +94,7 @@ const AddActivite = ({idVac}) => {
                          textSubmit = "Ajouter"
                          isSignUp={false}
             />
+            <p  className={errMsg ? "errmsg text-red-500" : "offscreen"}  aria-live="assertive" >{errMsg}</p>
         </div>
 
 
