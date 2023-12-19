@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import AddActivite from "./AddActivite";
 import {useDispatch} from "react-redux";
 import {useSelector} from "react-redux";
@@ -6,8 +6,14 @@ import {selectCurrentUser} from "../../features/AuthSlice";
 import API from "../../services/API";
 import {addActivites} from "../../features/VacancesSlices";
 
-
+/**
+ * Composant permettant  d'afficher les details d'une activité
+ * @param item activité qui a ete selectionné
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const DetailsActivite = ({item}) => {
+
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -15,12 +21,22 @@ const DetailsActivite = ({item}) => {
     const [tri, setTri] = useState('A-Z');
     const [recherche, setRecherche] = useState('');
 
+    //Lorsqu'on rempli le champ de trie. permet de recuperer la valeur
     const handleTriChange = (e) => {
         setTri(e.target.value);
     };
+
+    //Lorsqu'on rempli le champ de rechereche. permet de recuperer la valeur
     const handleRechercheChange = (e) => {
         setRecherche(e.target.value);
     };
+
+    /**
+     * Cette fonction permet de trier le tableau d'activité
+     * @param activites  tableau d'activité a trie
+     * @param tri  Valeur qui a été selectionné par l'utilisateur (A-Z pour croissant ou Z-A pour decroissant)
+     * @returns {*[]} retourne le tableau triés
+     */
     const trierActivites = (activites, tri) => {
         // Dupliquez les activités pour ne pas modifier l'original
         const activitesTriees = [...activites];
@@ -32,6 +48,12 @@ const DetailsActivite = ({item}) => {
         }
         return activitesTriees;
     };
+    /**
+     * Cette fonction permet de filtrer le tableau d'activité
+     * @param activites  tableau d'activité a filtrer
+     * @param recherche Valeur entré par l'utilisateur correspondant au titre de l'activité
+     * @returns {*} retourne le tableau filtré ou un tableau vide
+     */
     const filtrerActivites = (activites, recherche) => {
         return activites.filter((activite) =>
             activite.nom.toLowerCase().includes(recherche.toLowerCase())
@@ -44,10 +66,9 @@ const DetailsActivite = ({item}) => {
     };
     const handleParticipe = async (activite) => {
         try {
-            const activiteData = await API.addParticipantActivite(user.email, activite.id);
-            const idVac = activite.idVacance
-            dispatch(addActivites({activiteData, idVac}));
-            console.log(activiteData);
+            const newActivite = await API.addParticipantActivite(user.email, activite.id);
+            const idVac = item.id
+            dispatch(addActivites({newActivite, idVac}));
             // Other logic after successful sign-in
             // navigate('/')
         } catch (err) {
@@ -56,6 +77,7 @@ const DetailsActivite = ({item}) => {
             } else if (err.response === 401) {
                 setErrMsg('Unauthorized');
             } else {
+                console.log('Add Failed ' + err)
                 setErrMsg('Add Failed ' + err);
             }
         }
@@ -68,6 +90,66 @@ const DetailsActivite = ({item}) => {
 // Fonction pour basculer entre les composants dans le modal "Activite"
     const toggleActiviteComponent = () => {
         setIsAlternateActivite(!isAlternateActivite);
+    };
+
+
+    //State permettant de sauver l'etat de la date de début et heure d'une activité
+    const [dateHeureActivite, setDateHeureActivite] = useState({
+        dateDebut: '',
+        heureDebut: '',
+        dateFin: '',
+        heureFin: '',
+    });
+    useEffect(() => {
+        // Mettre à jour dateHeureActivite lorsque selectedItem change
+if(selectedItem){
+    setDateHeureActivite(
+        {
+            dateDebut: new Date(selectedItem.dateDebut).toLocaleDateString(),
+            heureDebut: new Date(selectedItem.dateDebut).toLocaleTimeString().slice(0, 5),
+            dateFin: new Date(selectedItem.dateFin).toLocaleDateString(),
+            heureFin: new Date(selectedItem.dateFin).toLocaleTimeString().slice(0, 5),
+        }
+    );
+}
+
+
+    }, [selectedItem]);
+
+
+    //permet de recuperer la valeur de la date et l'heure d'une activité
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setDateHeureActivite((prevFilters) => ({ ...prevFilters, [id]: value }));
+    };
+
+    const handleModifActivite = async () => {
+        // Vérification que dateFin et heureFin sont supérieurs à dateDebut et heureDebut
+        const dateDebut = new Date(`${dateHeureActivite.dateDebut} ${dateHeureActivite.heureDebut}`);
+        const dateFin = new Date(`${dateHeureActivite.dateFin} ${dateHeureActivite.heureFin}`);
+
+        if (dateFin <= dateDebut) {
+            // Afficher un message d'erreur ou prendre d'autres mesures nécessaires
+            setErrMsg("La date et l'heure de fin doivent être supérieures à la date et l'heure de début.");
+            return;
+        }
+        try {
+
+            const newActivite = await API.ModifActivite(dateDebut,dateFin, selectedItem.id   );
+            const idVac = item.id
+            dispatch(addActivites({newActivite, idVac}));
+            // Other logic after successful sign-in
+            // navigate('/')
+        } catch (err) {
+            if (err.response === 400) {
+                setErrMsg('Missing Username or Password');
+            } else if (err.response === 401) {
+                setErrMsg('Unauthorized');
+            } else {
+                console.log('Add Failed ' + err)
+                setErrMsg('Add Failed ' + err);
+            }
+        }
     };
 
 
@@ -160,16 +242,18 @@ const DetailsActivite = ({item}) => {
                                             <div className="block">
                                                 <label className="font-light">Date debut:</label>
                                                 <input type="text"
+                                                       onChange={handleChange}  id="dateDebut"
                                                        className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="5" placeholder="DD/MM/YY"
-                                                       value={new Date(activite.dateDebut).toLocaleDateString()}/>
+                                                       maxLength="10" placeholder="DD/MM/YY"
+                                                       value={dateHeureActivite.dateDebut}/>
                                             </div>
                                             <div className="block">
                                                 <label className="font-light">Heure</label>
                                                 <input type="text"
+                                                       onChange={handleChange}  id="heureDebut"
                                                        className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="3" placeholder="12:20"
-                                                       value={new Date(activite.dateDebut).toLocaleTimeString()}/>
+                                                       maxLength="5" placeholder="12:20"
+                                                       value={dateHeureActivite.heureDebut}/>
                                             </div>
 
                                         </div>
@@ -177,19 +261,23 @@ const DetailsActivite = ({item}) => {
                                             <div className="block">
                                                 <label className="font-light">Date fin:</label>
                                                 <input type="text"
+                                                       onChange={handleChange}  id="dateFin"
                                                        className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="5" placeholder="DD/MM/YY"
-                                                       value={new Date(activite.dateFin).toLocaleDateString()}/>
+                                                       maxLength="10" placeholder="DD/MM/YY"
+                                                       value={dateHeureActivite.dateFin}/>
                                             </div>
                                             <div className="block">
+
                                                 <label className="font-light">Heure</label>
                                                 <input type="text"
+                                                       onChange={handleChange}  id="heureFin"
                                                        className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="3" placeholder="12:20"
-                                                       value={new Date(activite.dateFin).toLocaleTimeString()}/>
+                                                       maxLength="5" placeholder="12:20"
+                                                       value={dateHeureActivite.heureFin}/>
                                             </div>
                                         </div>
-                                        <button type="button" onClick={toggleActiviteComponent} className="text-white m-5 inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:green-400
+                                        <p  className={errMsg ? "errmsg text-red-500" : "offscreen"}  aria-live="assertive" >{errMsg}</p>
+                                        <button type="button" onClick={handleModifActivite} className="text-white m-5 inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:green-400
                                         dark:hover:bg-gray-500 " data-modal-toggle="crud-modal">Modifier
                                         </button>
                                     </div>
@@ -203,7 +291,7 @@ const DetailsActivite = ({item}) => {
                                                         data-modal-toggle="crud-modal">
                                                     Participe déjà
                                                 </button> :
-                                                <button type="button" onClick={handleParticipe(activite)}
+                                                <button type="button" onClick={() => handleParticipe(activite)}
                                                         className="text-white m-5 inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:green-600
                                         dark:hover:bg-green-800 dark:focus:ring-blue-800"
                                                         data-modal-toggle="crud-modal">

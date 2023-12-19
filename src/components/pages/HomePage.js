@@ -14,12 +14,14 @@ import {useSelector} from "react-redux";
 import Agenda from "../organism/Agenda";
 import Alert from "../molecule/Alert";
 import {useError} from "../../ErrorContext";
+import {selectVacances} from "../../features/VacancesSlices";
 
 const fields = contactFields;
 let fieldsState = {};
 fields.forEach(field => fieldsState[field.id] = '');
 export default function HomePage() {
     const isAuthenticated = useSelector(state => state.rootReducer.auth.isAuthentificated);
+    const vacances = useSelector(selectVacances);
     // État pour suivre quel composant doit être rendu dans la section "Vacances"
     const [isAlternateVacance, setIsAlternateVacance] = useState(false);
     const { errMsg, setErrorMsg, infoMsg, setInfoMsg} = useError();
@@ -81,7 +83,10 @@ export default function HomePage() {
                 </>
             }
             agenda ={
-                <div><Agenda/></div>
+            isAuthenticated ?
+                <div className="mt-2"><Agenda vacances ={vacances}/></div>
+                :
+                <div className="mt-6"><Agenda vacances = {[]}/></div>
             }
             contact =
             {

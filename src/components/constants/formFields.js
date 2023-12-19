@@ -104,17 +104,9 @@ const getUserinscritFields = [
         type: "date",
         autoComplete: true,
         isRequired: true,
-        placeholder: "Date de début"
+        placeholder: "JJ/MM/AA "
 
     },
-    {
-        id: "dateFin",
-        name: "dateFin",
-        type: "date",
-        autoComplete: true,
-        isRequired: true,
-        placeholder: "Date de Fin"
-    }
 ]
 const addVacancesFields = [
     {

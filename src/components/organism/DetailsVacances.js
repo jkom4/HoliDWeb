@@ -9,6 +9,7 @@ const DetailsVacances = ({item}) => (
         <div className="justify-center flex-1 max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
             <div className="p-6 bg-gradient-to-br from-blue-200 via-purple-200 to-white-200">
                 <Weather lat={item.lieu.latitude} lon={item.lieu.longitude}/>
+                {console.log(item)}
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="p-6 mb-6 bg-gray-50 ">
