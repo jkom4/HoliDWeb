@@ -66,8 +66,8 @@ const DetailsActivite = ({item}) => {
     };
     const handleParticipe = async (activite) => {
         try {
-            const newActivite = await API.addParticipantActivite(user.email, activite.id);
             const idVac = item.id
+            const newActivite = await API.addParticipantActivite(user.email, idVac, activite.id);
             dispatch(addActivites({newActivite, idVac}));
             // Other logic after successful sign-in
             // navigate('/')
@@ -125,18 +125,21 @@ if(selectedItem){
 
     const handleModifActivite = async () => {
         // Vérification que dateFin et heureFin sont supérieurs à dateDebut et heureDebut
-        const dateDebut = new Date(`${dateHeureActivite.dateDebut} ${dateHeureActivite.heureDebut}`);
-        const dateFin = new Date(`${dateHeureActivite.dateFin} ${dateHeureActivite.heureFin}`);
+        const partsOfDateDebut = dateHeureActivite.dateDebut.split("/")
+        const partsOfDateFin = dateHeureActivite.dateFin.split("/")
 
+        const dateDebut = new Date(`${partsOfDateDebut[1]}/${partsOfDateDebut[0]}/${partsOfDateDebut[2]} ${dateHeureActivite.heureDebut}`);
+        const dateFin = new Date(`${partsOfDateFin[1]}/${partsOfDateFin[0]}/${partsOfDateFin[2]} ${dateHeureActivite.heureFin}`);
+        console.log(`${dateHeureActivite.dateDebut} ${dateHeureActivite.heureDebut}`)
+        console.log(dateDebut.toISOString())
         if (dateFin <= dateDebut) {
             // Afficher un message d'erreur ou prendre d'autres mesures nécessaires
             setErrMsg("La date et l'heure de fin doivent être supérieures à la date et l'heure de début.");
             return;
         }
         try {
-
-            const newActivite = await API.ModifActivite(dateDebut,dateFin, selectedItem.id   );
             const idVac = item.id
+            const newActivite = await API.ModifActivite(dateDebut,dateFin, idVac, selectedItem.id);
             dispatch(addActivites({newActivite, idVac}));
             // Other logic after successful sign-in
             // navigate('/')
@@ -151,6 +154,35 @@ if(selectedItem){
             }
         }
     };
+    const handleImportAgenda = () => {
+        let eventBase = (nom, description, dateDebut, dateFin, latitude, longitude) => {
+            return `BEGIN:VEVENT\r\n`
+                + `UID:${dateDebut.replace(/[:.-]/g, '')}777${user.email}\r\n`
+                + `DTSTAMP:${new Date().toISOString().replace(/[:-]/g, '').replace(/\.\d+/, '')}\r\n`
+                + `DTSTART:${dateDebut.replace(/[:.-]/g, '')}\r\n`
+                + `DTEND:${dateFin.replace(/[:.-]/g, '')}\r\n`
+                + `SUMMARY:${nom}\r\n`
+                + `DESCRIPTION:${description}\r\n`
+                + `GEO:${latitude};${longitude}\r\n`
+                + `END:VEVENT\r\n`
+        }
+        let events = ``
+        //item.activites
+        activitesFiltrees.forEach((activite) => {if (activite.participants.some(participant => participant.id === user.id)) {events+=(eventBase(activite.nom, activite.description, activite.dateDebut, activite.dateFin, activite.lieu.latitude, activite.lieu.longitude))}})
+        const icalData = `BEGIN:VCALENDAR\r\n`
+            + `VERSION:2.0\r\n`
+            + `PRODID://HolyD//FR\r\n`
+            + `${events}`
+            + `END:VCALENDAR`
+        const blob = new Blob([icalData], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'HolyD_Activites.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
 
     return (<div className="bg-white pb-4 px-4 rounded-md w-full">
@@ -159,16 +191,30 @@ if(selectedItem){
                 <img height="25" width="25"
                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC"/>
                 Retour
-            </button> : <button type="button" onClick={toggleActiviteComponent} className="text-white m-5 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
-                                        dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="crud-modal">
-                <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd"
-                          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                          clipRule="evenodd"></path>
-                </svg>
-                Add
-            </button>}
+            </button> :
+                <div className="inline-flex">
+                    <button type="button" onClick={toggleActiviteComponent} className="text-white mt-5 ml-5 mb-5 mr-1 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
+                                            dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-toggle="crud-modal">
+                        <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fillRule="evenodd"
+                                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                  clipRule="evenodd"></path>
+                        </svg>
+                        Add
+                    </button>
+                    <button type="button" onClick={handleImportAgenda} className="text-white mt-5 mb-5 mr-5 ml-1 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
+                                            dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-toggle="crud-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth="2"/>
+                            <path  strokeWidth="2" d="M8 2v4M16 2v4M3 10h18"/>
+                        </svg>
+                        Importer
+                    </button>
+                </div>
+            }
             {isAlternateActivite ? <AddActivite idVac={item.id}/> :
 
                 <>
@@ -177,15 +223,15 @@ if(selectedItem){
 
 
                         <span className="mx-4 font-medium">Ordre</span>
-                            <div className="w-full inline-flex sm:w-24  mr-10">
-                                <select
-                                    className="leading-snug border border-gray-300 block w-full  bg-gray-100 text-sm text-gray-600 py-1 px-4 pl-8 rounded-lg"
-                                    value={tri}
-                                    onChange={handleTriChange}>
-                                    <option value="A-Z">A-Z</option>
-                                    <option value="Z-A">Z-A</option>
-                                </select>
-                            </div>
+                        <div className="w-full inline-flex sm:w-24  mr-10">
+                        <select
+                                className="leading-snug border border-gray-300 block w-full  bg-gray-100 text-sm text-gray-600 py-1 px-4 pl-8 rounded-lg"
+                                value={tri}
+                                onChange={handleTriChange}>
+                                <option value="A-Z">A-Z</option>
+                                <option value="Z-A">Z-A</option>
+                            </select>
+                        </div>
 
 
                         <div className="w-full sm:w-64 inline-block relative ">
@@ -214,6 +260,7 @@ if(selectedItem){
                                 <th className="px-4 py-2 bg-gray-200 " style={{backgroundColor: "#f8f8f8"}}>Titre</th>
                                 <th className="px-4 py-2 " style={{backgroundColor: "#f8f8f8"}}>Date</th>
                                 <th className="px-4 py-2 " style={{backgroundColor: "#f8f8f8"}}>Participant(s)</th>
+                                <th className="px-4 py-2 " style={{backgroundColor: "#f8f8f8"}}>Participation</th>
                             </tr>
                             </thead>
                             <tbody className="text-sm font-normal text-gray-700">
@@ -221,8 +268,20 @@ if(selectedItem){
                                 <tr className="hover:bg-gray-100 border-b border-gray-200 py-10"
                                     onClick={() => handleItemClick(activite)}>
                                     <td className="px-4 py-4">{activite.nom}</td>
-                                    <td className="px-4 py-4"> DU {new Date(activite.dateDebut).toLocaleDateString()} {new Date(activite.dateDebut).toLocaleTimeString()} AU {new Date(activite.dateDebut).toLocaleDateString()} {new Date(activite.dateFin).toLocaleTimeString()}</td>
+                                    <td className="px-4 py-4"> DU {new Date(activite.dateDebut).toLocaleDateString()} {new Date(activite.dateDebut).toLocaleTimeString()} AU {new Date(activite.dateFin).toLocaleDateString()} {new Date(activite.dateFin).toLocaleTimeString()}</td>
                                     <td className="px-4 py-4">{activite.participants.length}</td>
+                                    <td className="px-4 py-4">{activite.participants.some(participant => participant.id === user.id) ?
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5"
+                                             viewBox="0 0 24 24">
+                                            <path fill="green"
+                                                  d="M21.86 6.32a1 1 0 0 0-1.41.13L9.57 18.75l-4.64-5.5a1 1 0 0 0-1.46 1.37l5 6a1 1 0 0 0 1.46 0L22 7.46a1 1 0 0 0-.14-1.41z"/>
+                                        </svg> :
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5"
+                                             viewBox="0 0 24 24">
+                                            <path fill="red"
+                                                  d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59L5 6.41l5.59 5.59-5.59 5.59L6.41 19l5.59-5.59 5.59 5.59L19 17.59l-5.59-5.59L19 6.41z"/>
+                                        </svg>}
+                                    </td>
                                 </tr>
                                 {selectedItem === activite && <div className="flex gap-x-2 my-1 ">
                                     <div className="block">

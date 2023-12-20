@@ -156,7 +156,7 @@ class API {
             "nom": fiedls.nom,
         }
         console.log(storedToken)
-        return fetch(`/vacance/add`,
+        return fetch(`/vacance`,
             {
                 method: 'POST',
                 mode: "cors",
@@ -186,15 +186,14 @@ class API {
 
     }
 
-    static async addParticipant(email,id) {
+    static async addParticipant(email,idVacance) {
         const storedToken = localStorage.getItem('token');
 
         const datafields = {
-            "email": email,
-            "id": id
+            "email": email
         }
         console.log(datafields)
-        return fetch(`/vacance/addParticipant`,
+        return fetch(`/vacance/${idVacance}/participant`,
             {
                 method: 'POST',
                 mode: "cors",
@@ -223,15 +222,14 @@ class API {
             })
     }
 
-    static async addParticipantActivite(email,id) {
+    static async addParticipantActivite(email, idVacance, idActivite) {
         const storedToken = localStorage.getItem('token');
 
         const datafields = {
-            "email": email,
-            "id": id
+            "email": email
         }
         console.log(datafields)
-        return fetch(`/activite/addParticipant`,
+        return fetch(`/vacance/${idVacance}/activite/${idActivite}/participant`,
             {
                 method: 'POST',
                 mode: "cors",
@@ -273,19 +271,17 @@ class API {
             "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
             "dateFin": convertToOffsetDateTime(fiedls.dateFin),
             "description": fiedls.description,
-            "idVacance":idVac,
             "lieu": lieu,
             "nom": fiedls.nom,
         }
         console.log(datafiels)
-        return fetch(`/activite/add`,
+        return fetch(`/vacance/${idVac}/activite`,
             {
                 method: 'POST',
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
                     'authorization': `Bearer ${storedToken}`
-
                 },
                 body: JSON.stringify(
                     datafiels)
@@ -305,18 +301,17 @@ class API {
 
     }
 
-    static async ModifActivite(dateDebut, dateFin, id) {
+    static async ModifActivite(dateDebut, dateFin, idVacance, idActivite) {
         const storedToken = localStorage.getItem('token');
 
         const datafiels = {
             "dateDebut": convertToOffsetDateTime(dateDebut),
             "dateFin": convertToOffsetDateTime(dateFin),
-            "id": id,
         }
         console.log(datafiels)
-        return fetch(`/REST_AHME_VERD_WABO/activite/changeDateTimeOfActivite`,
+        return fetch(`/vacance/${idVacance}/activite/${idActivite}/changeDates`,
             {
-                method: 'POST',
+                method: 'PUT',
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',

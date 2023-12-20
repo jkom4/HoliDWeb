@@ -38,7 +38,7 @@ const DetailsVacances = ({item}) => (
                         ))}
                     </div>
 
-                    <Modal buttonToggle="Nouvelle activité" title="Ajouter une activité"> <DetailsActivite item = {item}/></Modal>
+                    <Modal buttonToggle="Activité(s)" title="Activité(s)"> <DetailsActivite item = {item}/></Modal>
                 </div>
                 <div className="p-6 mb-6 bg-white">
                     <h2 className="mb-6 text-xl font-semibold text-left font-gray-600 ">
