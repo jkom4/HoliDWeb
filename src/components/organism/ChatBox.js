@@ -23,9 +23,15 @@ export default function ChatBox({item}){
         }
     }
     useEffect(() => {
-        initMessages().then();
+        initMessages()
     }, []);
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
+            await initMessages()
+        }, 20000); // 20sec
 
+        return () => clearInterval(intervalId); // Nettoyage de l'intervalle lors du démontage du composant
+    }, [item.id]);
     const handleChangeInputMsg = (event) => {
         setMessageInput(event.target.value);
     };
