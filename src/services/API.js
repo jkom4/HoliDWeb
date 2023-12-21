@@ -2,7 +2,7 @@ import emailjs from "@emailjs/browser";
 
 
 
-const apiUrl = "http://studapps.cg.helmo.be:5010/REST_AHME_VERD_WABO"
+//const apiUrl = "http://studapps.cg.helmo.be:5010/REST_AHME_VERD_WABO"
 const API_keyCurrentWeather = '82f4768ca7650d896603a5eb038218c6'
 
 
@@ -331,6 +331,60 @@ class API {
             .then(data =>data)
             .catch((e) => {
                 console.error('Error during add-Activite:', e);
+                throw e; // Propagate the error for further handling
+            })
+    }
+    static async SendMessage(idVacance, content) {
+        const storedToken = localStorage.getItem('token');
+
+        const datafiels = {
+            "content": content,
+        }
+        return fetch(`/vacance/${idVacance}/message`,
+            {
+                method: 'POST',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${storedToken}`
+
+                },
+                body: JSON.stringify(
+                    datafiels)
+            }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                return response.json()
+            }
+        })
+            .then(data =>data)
+            .catch((e) => {
+                console.error('Error during sendMessage:', e);
+                throw e; // Propagate the error for further handling
+            })
+    }
+    static async GetTheTop100Messages(idVacance) {
+        const storedToken = localStorage.getItem('token');
+
+        return fetch(`/vacance/${idVacance}/message`,
+            {
+                method: 'GET',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${storedToken}`
+                }
+            }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                return response.json()
+            }
+        })
+            .then(data =>data)
+            .catch((e) => {
+                console.error('Error during getMessage:', e);
                 throw e; // Propagate the error for further handling
             })
     }

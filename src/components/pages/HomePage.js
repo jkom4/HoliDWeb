@@ -8,7 +8,6 @@ import CustomForm from "../organism/CustomForm";
 import {contactFields} from "../constants/formFields";
 import API from "../../services/API";
 import AddVancanceForm from "../organism/AddVancanceForm";
-import AddParticipantForm from "../organism/AddParticipantForm";
 import MesVacances from "../organism/MesVacances";
 import {useSelector} from "react-redux";
 import Agenda from "../organism/Agenda";
@@ -65,13 +64,13 @@ export default function HomePage() {
             { isAuthenticated &&
                 <>
                 {isAlternateVacance ?
-                    <button className="bg-blue-500  p-2.5 m-2 text-blue-100 rounded-md text-sm font-medium inline-flex" onClick={toggleVacanceComponent}>
+                    <button className="bg-blue-700 p-2.5 m-2 text-blue-100 rounded-md text-sm font-medium inline-flex" onClick={toggleVacanceComponent}>
 
                         <img height="25" width="25" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC"/>
                             Retour
                     </button>
                     :
-                    <button className="bg-blue-500  p-2.5 m-2 text-blue-100 rounded-md text-sm font-medium inline-flex" onClick={toggleVacanceComponent}>
+                    <button className="bg-blue-700 p-2.5 m-2 text-blue-100 rounded-md text-sm font-medium inline-flex" onClick={toggleVacanceComponent}>
                         <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
                         Nouvelle période
                     </button>

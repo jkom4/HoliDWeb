@@ -87,7 +87,7 @@ const DetailsActivite = ({item}) => {
     // État pour suivre quel composant doit être rendu dans le modal "Activite"
     const [isAlternateActivite, setIsAlternateActivite] = useState(false);
 
-// Fonction pour basculer entre les composants dans le modal "Activite"
+    // Fonction pour basculer entre les composants dans le modal "Activite"
     const toggleActiviteComponent = () => {
         setIsAlternateActivite(!isAlternateActivite);
     };
@@ -102,19 +102,19 @@ const DetailsActivite = ({item}) => {
     });
     useEffect(() => {
         // Mettre à jour dateHeureActivite lorsque selectedItem change
-if(selectedItem){
-    setDateHeureActivite(
-        {
-            dateDebut: new Date(selectedItem.dateDebut).toLocaleDateString(),
-            heureDebut: new Date(selectedItem.dateDebut).toLocaleTimeString().slice(0, 5),
-            dateFin: new Date(selectedItem.dateFin).toLocaleDateString(),
-            heureFin: new Date(selectedItem.dateFin).toLocaleTimeString().slice(0, 5),
+        if(selectedItem){
+            setDateHeureActivite(
+                {
+                    dateDebut: new Date(selectedItem.dateDebut).toLocaleDateString(),
+                    heureDebut: new Date(selectedItem.dateDebut).toLocaleTimeString().slice(0, 5),
+                    dateFin: new Date(selectedItem.dateFin).toLocaleDateString(),
+                    heureFin: new Date(selectedItem.dateFin).toLocaleTimeString().slice(0, 5),
+                }
+            );
         }
-    );
-}
 
 
-    }, [selectedItem]);
+            }, [selectedItem]);
 
 
     //permet de recuperer la valeur de la date et l'heure d'une activité
@@ -154,6 +154,7 @@ if(selectedItem){
             }
         }
     };
+
     const handleImportAgenda = () => {
         let eventBase = (nom, description, dateDebut, dateFin, latitude, longitude) => {
             return `BEGIN:VEVENT\r\n`
@@ -184,7 +185,6 @@ if(selectedItem){
         document.body.removeChild(link);
     }
 
-
     return (<div className="bg-white pb-4 px-4 rounded-md w-full">
             {isAlternateActivite ? <button type="button" onClick={toggleActiviteComponent} className="text-white inline-flex items-center m-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
                                         dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="crud-modal">
@@ -205,8 +205,7 @@ if(selectedItem){
                         Add
                     </button>
                     <button type="button" onClick={handleImportAgenda} className="text-white mt-5 mb-5 mr-5 ml-1 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
-                                            dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                            data-modal-toggle="crud-modal">
+                                            dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth="2"/>
                             <path  strokeWidth="2" d="M8 2v4M16 2v4M3 10h18"/>
@@ -216,12 +215,8 @@ if(selectedItem){
                 </div>
             }
             {isAlternateActivite ? <AddActivite idVac={item.id}/> :
-
                 <>
-
                     <div className="w-full flex justify-end px-2 mt-2 ">
-
-
                         <span className="mx-4 font-medium">Ordre</span>
                         <div className="w-full inline-flex sm:w-24  mr-10">
                         <select
@@ -232,15 +227,12 @@ if(selectedItem){
                                 <option value="Z-A">Z-A</option>
                             </select>
                         </div>
-
-
                         <div className="w-full sm:w-64 inline-block relative ">
                             <input type="" name=""
                                    className="leading-snug border border-gray-300 block w-full appearance-none bg-gray-100 text-sm text-gray-600 py-1 px-4 pl-8 rounded-lg"
                                    placeholder="Search"
                                    value={recherche}
                                    onChange={handleRechercheChange}/>
-
                             <div
                                 className="pointer-events-none absolute pl-3 inset-y-0 left-0 flex items-center px-2 text-gray-300">
 
@@ -253,7 +245,6 @@ if(selectedItem){
                         </div>
                     </div>
                     <div className="overflow-x-auto mt-6">
-
                         <table className="table-auto border-collapse w-full">
                             <thead>
                             <tr className="rounded-lg text-sm font-medium text-gray-700 text-left">
@@ -314,7 +305,6 @@ if(selectedItem){
                                                        maxLength="5" placeholder="12:20"
                                                        value={dateHeureActivite.heureDebut}/>
                                             </div>
-
                                         </div>
                                         <div className="flex gap-x-2 my-1">
                                             <div className="block">
@@ -340,9 +330,7 @@ if(selectedItem){
                                         dark:hover:bg-gray-500 " data-modal-toggle="crud-modal">Modifier
                                         </button>
                                     </div>
-
                                     <div className="block">
-
                                         {//Verifier si le user participe deja
                                             activite.participants.some(participant => participant.id === user.id) ?
                                                 <button type="button"
@@ -367,22 +355,16 @@ if(selectedItem){
                                         <div>
                                             <h2>Liste de participants</h2>
                                             {activite.participants.map(participant => (
-
-                                                <p className="m-2 font-medium tracking-more-wider h-6 "> {participant.prenom + " " + participant.nom}</p>))}
+                                            <p className="m-2 font-medium tracking-more-wider h-6 "> {participant.prenom + " " + participant.nom}</p>))}
                                         </div>
                                     </div>
                                 </div>}
                             </>))}
-
                             </tbody>
                         </table>
                     </div>
-
-
                 </>}
         </div>
-
-
     )
 }
 export default DetailsActivite;
