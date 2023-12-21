@@ -86,13 +86,13 @@ export default function CustomForm(props){
 
             {/* Affichage d'un message si les mots de passe ne correspondent pas en temps réel */}
             { props.isSignUp && !passwordsMatch && (
-                <p style={{ color: 'red' }}>Les mots de passe ne correspondent pas ! </p>
+                <p id='errormsg' style={{ color: 'red' }}>Les mots de passe ne correspondent pas ! </p>
             )}
             {/* Affichage d'un message si l'email ne correspond pas en temps réel */}
             {formState.email && !formState.isEmailValid && (
-                <p style={{ color: 'red' }}>L'adresse e-mail n'est pas valide !</p>
+                <p id='errormsg' style={{ color: 'red' }}>L'adresse e-mail n'est pas valide !</p>
             )}
-            <p style={{ color: 'red' }}>{errMsg}</p>
+            <p id='errormsg' style={{ color: 'red' }}>{errMsg}</p>
 
             <CustomButton handleSubmit={handleSubmit} text={props.textSubmit}/>
 

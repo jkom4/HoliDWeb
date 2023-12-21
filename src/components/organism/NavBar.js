@@ -34,7 +34,7 @@ export default function NavBar() {
                             <div className="flex space-x-4">
                                 <a href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Accueil</a>
                                 <a href="#vacances" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Vacances</a>
-                                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">A propos</a>
+                                <a href="#agenda" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Agenda</a>
                                 <a href="#contact" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</a>
                             </div>
                         </div>
@@ -50,8 +50,8 @@ export default function NavBar() {
                             :
                             <div className="relative ml-3">
                                 <div className="inline-flex ">
-                                    <p className="pr-2 text-white pt-1">Bienvenue {user.nom}</p>
-                                    <a onClick={() => {
+                                    <p id="usermsg" className="pr-2 text-white pt-1">Bienvenue {user.nom}</p>
+                                    <a id="logoutbtn" onClick={() => {
                                         dispatch(logout())
                                         dispatch(resetVacances())
                                     }} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Deconnexion</a>

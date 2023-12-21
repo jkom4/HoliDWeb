@@ -66,7 +66,7 @@ export default function HomePage() {
                 {isAlternateVacance ?
                     <button className="bg-blue-700 p-2.5 m-2 text-blue-100 rounded-md text-sm font-medium inline-flex" onClick={toggleVacanceComponent}>
 
-                        <img height="25" width="25" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC"/>
+                        <img alt="" height="25" width="25" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC"/>
                             Retour
                     </button>
                     :

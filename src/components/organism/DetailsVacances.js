@@ -1,6 +1,5 @@
 import AddParticipantForm from "./AddParticipantForm";
 import Weather from "./Weather";
-import AddActivite from "./AddActivite";
 import Modal from "./Modal";
 import DetailsActivite from "./DetailsActivite";
 

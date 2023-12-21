@@ -4,7 +4,6 @@ import {getUserinscritFields} from "../constants/formFields";
 import {CustomButton} from "../molecule/CustomButton";
 import API from "../../services/API";
 import {useDispatch, useSelector} from "react-redux";
-import {login, selectCurrentToken, selectCurrentUser} from "../../features/AuthSlice";
 import {getUserInHolliday, getUserInscrit, searchUser} from "../../features/UserSlice";
 
 const fields=getUserinscritFields;
@@ -49,12 +48,12 @@ export default function UserInscrit(){
                     )
                 }
 
-                <CustomButton style=" mt-4 h-12 text-center py-3 rounded bg-gray-800 text-white hover:bg-gray-700 focus:outline-none my-1"
+                <CustomButton  style=" mt-4 h-12 text-center py-3 rounded bg-gray-800 text-white hover:bg-gray-700 focus:outline-none my-1"
                               handleSubmit={handleSubmit} text="Rechercher"/>
             </div>
             <p  className={errMsg ? "errmsg text-red-500" : "offscreen"}  aria-live="assertive" >{errMsg}</p>
             <div className=" grid grid-cols-2 gap-2 col-start-2 col-end-6 ">
-                <p className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur inscrit : {userInscrit ? userInscrit : 0} </p>
+                <p className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur inscrit : <span id="nbrUserInscrit">{userInscrit ? userInscrit : 0}</span>  </p>
                 <ul className=" text-l font-extrabold text-gray-700">Nombre d'utilisateur en vacance :
                     { userInHoliday ? userInHoliday.map(data => (
                         <li className="ml-14">

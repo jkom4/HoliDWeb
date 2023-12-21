@@ -44,7 +44,7 @@ const Alert = ({color, message}) => {
                             ></path>
                         </svg>
                     </div>
-                    <div className="ml-8 mr-12">{message}</div>
+                    <div id="alertmsg" className="ml-8 mr-12">{message}</div>
                     <div
                         className="absolute top-3 right-3 w-max rounded-lg transition-all hover:bg-white hover:bg-opacity-20"
                         data-dismissible-target="alert"

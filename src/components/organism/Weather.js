@@ -1,4 +1,4 @@
-import ReactWeather, { useOpenWeather } from 'react-open-weather';
+
 import API from "../../services/API";
 import {useEffect, useState} from "react";
 

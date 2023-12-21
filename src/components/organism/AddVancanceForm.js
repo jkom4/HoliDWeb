@@ -5,6 +5,7 @@ import CustomForm from "./CustomForm";
 import GooglePlacesAutocomplete, {geocodeByAddress} from 'react-google-places-autocomplete';
 import {addVacances} from "../../features/VacancesSlices";
 import {useDispatch} from "react-redux";
+import Alert from "../molecule/Alert";
 
 const fields=addVacancesFields;
 let fieldsState = {};
@@ -65,7 +66,7 @@ const AddVacanceForm = () => {
 
     return(
         <div>
-
+            {errMsg && <Alert message={errMsg} color={'red'}/>}
             <GooglePlacesAutocomplete
                 apiKey="AIzaSyDmu468LzlqBsJKbbZFhKNXdn6a-f0peMM"
                 selectProps={{

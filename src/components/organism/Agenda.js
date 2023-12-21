@@ -3,7 +3,6 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 
 
 import moment from 'moment'
-import {selectVacances} from "../../features/VacancesSlices";
 import {useSelector} from "react-redux";
 import {selectCurrentUser} from "../../features/AuthSlice";
 const localizer = momentLocalizer(moment)
