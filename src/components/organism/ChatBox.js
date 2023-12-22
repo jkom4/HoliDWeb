@@ -54,7 +54,7 @@ export default function ChatBox({item}){
             setErrMsg('Bad request');
         } else if (err.response === 401) {
             setErrMsg('Unauthorized');
-        } else if (err.response === 500) {
+        } else if (err.response === 403) {
             setErrMsg('JWT expired');
         }
         else {
