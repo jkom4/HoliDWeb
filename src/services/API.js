@@ -1,4 +1,6 @@
 import emailjs from "@emailjs/browser";
+import {isExpired} from "react-jwt";
+import {Navigate, Outlet} from "react-router-dom";
 
 
 
@@ -15,9 +17,23 @@ function convertToOffsetDateTime(date) {
 }
 
 /**
+ * Cette fonction permet de recuperer le token dans le local storage et de rediriger vers le login si jamais le token a  expiré
+ * @returns {JSX.Element|string} soit la redirection si il a expiré soit le token (string)
+ */
+function storedToken() {
+    const token = localStorage.getItem('token')
+    if( isExpired(token)){
+       return <Navigate to="/login" replace />
+    }
+
+    return  token;
+}
+
+/**
  * Classe permettant de gerer les requetes vers l'API Web
  */
 class API {
+
 
     /**
      * Requete vers l'Api permettant le l'inscription
@@ -189,7 +205,7 @@ class API {
      * @constructor
      */
     static AddVacance(fiedls,lieu) {
-        const storedToken = localStorage.getItem('token');
+
 
         const datafiels = {
             "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
@@ -198,14 +214,13 @@ class API {
             "lieu": lieu,
             "nom": fiedls.nom,
         }
-        console.log(storedToken)
         return fetch(`/vacance`,
             {
                 method: 'POST',
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
 
                 },
                 body: JSON.stringify(
@@ -236,7 +251,6 @@ class API {
      * @returns {Promise<Response>}retourne une promesse avec le resultat de la requête
      */
     static async addParticipant(email,idVacance) {
-        const storedToken = localStorage.getItem('token');
 
         const datafields = {
             "email": email
@@ -248,7 +262,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
 
                 },
                 body: JSON.stringify(
@@ -279,7 +293,6 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      */
     static async addParticipantActivite(email, idVacance, idActivite) {
-        const storedToken = localStorage.getItem('token');
 
         const datafields = {
             "email": email
@@ -291,7 +304,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
 
                 },
                 body: JSON.stringify(
@@ -335,7 +348,6 @@ class API {
      * @constructor
      */
     static AddActivite(fiedls,lieu,idVac) {
-        const storedToken = localStorage.getItem('token');
 
         const datafiels = {
             "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
@@ -351,7 +363,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
                 },
                 body: JSON.stringify(
                     datafiels)
@@ -381,7 +393,6 @@ class API {
      * @constructor
      */
     static async ModifActivite(dateDebut, dateFin, idVacance, idActivite) {
-        const storedToken = localStorage.getItem('token');
 
         const datafiels = {
             "dateDebut": convertToOffsetDateTime(dateDebut),
@@ -394,7 +405,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
 
                 },
                 body: JSON.stringify(
@@ -422,7 +433,6 @@ class API {
      * @constructor
      */
     static async SendMessage(idVacance, content) {
-        const storedToken = localStorage.getItem('token');
 
         const datafiels = {
             "content": content,
@@ -433,7 +443,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
 
                 },
                 body: JSON.stringify(
@@ -459,7 +469,6 @@ class API {
      * @constructor
      */
     static async GetTheTop100Messages(idVacance) {
-        const storedToken = localStorage.getItem('token');
 
         return fetch(`/vacance/${idVacance}/message`,
             {
@@ -467,7 +476,7 @@ class API {
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken}`
+                    'authorization': `Bearer ${storedToken()}`
                 }
             }).then(response => {
             if (!response.ok) {

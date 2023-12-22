@@ -26,7 +26,7 @@ const Alert = ({color, message}) => {
                 <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
                     <div
-                        className={`font-regular relative block w-full rounded-lg bg-gradient-to-tr from-${color}-600 to-${color}-400 px-4 py-4 text-base text-white`}
+                        className={`font-regular relative block w-full rounded-lg bg-gradient-to-tr from-red-600 to-red-400 px-4 py-4 text-base text-white`}
                         data-dismissible="alert"
                     >
                     <div className="absolute top-4 left-4">

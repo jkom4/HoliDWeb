@@ -1,20 +1,28 @@
 import './index.css';
 import {
-  BrowserRouter,
-  Routes,
-  Route,
+    BrowserRouter,
+    Routes,
+    Route, Outlet, Navigate,
 } from "react-router-dom";
 import SignupPage from './components/pages/SignUpPage';
 import LoginPage from './components/pages/LoginPage';
 import HomePage from "./components/pages/HomePage";
+import {isExpired} from "react-jwt";
 
 function App() {
+    const AuthWrapper = () => {
+        return isExpired(localStorage.getItem('token'))
+            ? <Navigate to="/login" replace />
+            : <Outlet />
+    };
   return (
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage/>} />
-          <Route path="/login" element={<LoginPage/>} />
-          <Route path="/signup" element={<SignupPage/>} />
+            <Route element={<AuthWrapper />}>
+                <Route path="/" element={<HomePage/>} />
+            </Route>
+            <Route path="/login" element={<LoginPage/>} />
+            <Route path="/signup" element={<SignupPage/>} />
         </Routes>
       </BrowserRouter>
   );
