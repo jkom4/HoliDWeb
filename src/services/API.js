@@ -4,7 +4,7 @@ import {Navigate, Outlet} from "react-router-dom";
 
 
 
-//const apiUrl = "http://studapps.cg.helmo.be:5010/REST_VERD_WABO"
+//const apiUrl = "https://studapps.cg.helmo.be:5011/REST_VERD_WABO"
 const API_keyCurrentWeather = '82f4768ca7650d896603a5eb038218c6'
 
 /**

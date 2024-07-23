@@ -2,7 +2,7 @@
   "name": "holidweb",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://studapps.cg.helmo.be:5010/REST_VERD_WABO",
+  "proxy": "https://studapps.cg.helmo.be:5011/REST_VERD_WABO",
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@headlessui/react": "^1.7.17",
