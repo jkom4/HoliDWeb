@@ -399,7 +399,7 @@ class API {
             "dateFin": convertToOffsetDateTime(dateFin),
         }
         console.log(datafiels)
-        return fetch(`/vacance/${idVacance}/activite/${idActivite}/changeDates`,
+        return fetch(`/vacance/${idVacance}/activite/${idActivite}/`,
             {
                 method: 'PUT',
                 mode: "cors",
