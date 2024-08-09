@@ -438,7 +438,7 @@ class API {
 
     static async getDocumentsForActivity(vacanceId,activityId) {
         try {
-            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}`, {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activite/${activityId}`, {
                 method: 'GET',
                 headers: {
                     'authorization': `Bearer ${getToken()}`,
@@ -453,7 +453,7 @@ class API {
 
     static async uploadDocumentForActivity(formData, vacanceId,activityId) {
         try {
-            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}`, {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activite/${activityId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${getToken()}`,
@@ -484,7 +484,7 @@ class API {
 
     static async trackDocumentDownloadForActivity(vacanceId, activityId, filename) {
         try {
-            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}/${filename}`, {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activite/${activityId}/${filename}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${getToken()}`,
