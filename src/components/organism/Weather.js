@@ -9,7 +9,7 @@ const Weather =  (latlng) => {
     useEffect(() => {
         const obtenirWeatherCurrent = async () => {
             try {
-                const data = await API.currentweather(latlng);
+                const data = await API.currentWeather(latlng);
                 // Extraire les données des 5 heures suivantes
                 const data5Hours = data.list.slice(1, 6);
                 setWeatherCurrent(data);

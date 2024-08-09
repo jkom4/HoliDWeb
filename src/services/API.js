@@ -1,11 +1,10 @@
 import emailjs from "@emailjs/browser";
-import {isExpired} from "react-jwt";
-import {Navigate, Outlet} from "react-router-dom";
+import { isExpired } from "react-jwt";
+import { Navigate } from "react-router-dom";
 
-
-
-//const apiUrl = "https://studapps.cg.helmo.be:5011/REST_VERD_WABO"
-const API_keyCurrentWeather = '82f4768ca7650d896603a5eb038218c6'
+// Utilisation de variables d'environnement pour les URL et les clés API
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'https://studapps.cg.helmo.be:5011/REST_VERD_WABO';
+const API_KEY_CURRENT_WEATHER = process.env.REACT_APP_API_KEY_CURRENT_WEATHER || '82f4768ca7650d896603a5eb038218c6';
 
 /**
  * Permet de convertir une date en offsetDateTime
@@ -20,54 +19,49 @@ function convertToOffsetDateTime(date) {
  * Cette fonction permet de recuperer le token dans le local storage et de rediriger vers le login si jamais le token a  expiré
  * @returns {JSX.Element|string} soit la redirection si il a expiré soit le token (string)
  */
-function storedToken() {
-    const token = localStorage.getItem('token')
-    if( isExpired(token)){
-       return <Navigate to="/login" replace />
+function getToken() {
+    const token = localStorage.getItem('token');
+    if (token && isExpired(token)) {
+        localStorage.removeItem('token'); // Supprimer le token expiré
+        return <Navigate to="/login" replace />;
     }
-
-    return  token;
+    return token;
 }
 
+// Gestionnaire pour les réponses fetch, afin de centraliser le traitement des erreurs
+async function handleFetchResponse(response) {
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`${errorData.message} (Status: ${response.status})`);
+    }
+    return response.json();
+}
 /**
  * Classe permettant de gerer les requetes vers l'API Web
  */
 class API {
 
-
-    /**
-     * Requete vers l'Api permettant le l'inscription
-     * @param signUpFields  les champs pour accompagner la requête (email, name, password, firstname)
-     * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
-     * @constructor
-     */
-    static  SignUp(signUpFields) {
-        const datalogin = {
-            "email": signUpFields.email,
-            "nom": signUpFields.name,
-            "passwd": signUpFields.password,
-            "prenom": signUpFields.firstname
-        }
-        console.log(datalogin)
-        return  fetch(`/user/signup`,
-            {
+    // Méthode pour l'inscription des utilisateurs
+    static async SignUp(signUpFields) {
+        const data = {
+            email: signUpFields.email,
+            nom: signUpFields.name,
+            passwd: signUpFields.password,
+            prenom: signUpFields.firstname,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/user/signup`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(datalogin)
-            }).then(async response => {
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`${errorData.message}! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data => data)
-            .catch(error => { throw error})
-
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error during sign-up:', error);
+            throw error;
+        }
     }
 
     /**
@@ -76,36 +70,24 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static SignIn(signinFields) {
-        const datalogin = {
-            "email": signinFields.email,
-            "passwd": signinFields.password
-        }
-        console.log(datalogin)
-        return fetch(`/user/signin`,
-            {
+    static async SignIn(signinFields) {
+        const data = {
+            email: signinFields.email,
+            passwd: signinFields.password,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/user/signin`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(
-                    datalogin)
-            }).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(
-                data => data
-            )
-            .catch((e) => {
-                console.error('Error during sign-in:', e);
-                throw e; // Propagate the error for further handling
-            })
-
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error during sign-in:', error);
+            throw error;
+        }
     }
 
     /**
@@ -114,39 +96,25 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static SignInWithProvider(signinFields) {
-        const dataFetch = {
-            "email": signinFields.email,
-            "nom": signinFields.family_name,
-            "prenom": signinFields.given_name
-        }
-        console.log(dataFetch)
-        return fetch(`/user/signinWithProvider`,
-            {
+    static async SignInWithProvider(signinFields) {
+        const data = {
+            email: signinFields.email,
+            nom: signinFields.family_name,
+            prenom: signinFields.given_name,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/user/signinWithProvider`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(
-                    dataFetch)
-            }).then(response => {
-            if (!response.ok) {
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-
-            .then(
-                data => data
-            )
-            .catch((e) => {
-                console.error('Error during sign-in Google:', e);
-                throw e; // Propagate the error for further handling
-            })
-
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error during sign-in with provider:', error);
+            throw error;
+        }
     }
 
     /**
@@ -154,28 +122,20 @@ class API {
      * @param formFields  les champs pour accompagner la requête (dateDebut)
      * @returns {Promise<Response | void>}  retourne une promesse avec le résultat de la requête
      */
-    static nbrUser(formFields) {
-
-        return fetch(`/user/nbrUserAndNbrUserInHolidayForADate?dateTime=${convertToOffsetDateTime(formFields.dateDebut)}`,
-            {
+    static async nbrUser(formFields) {
+        try {
+            const response = await fetch(`${BASE_URL}/user/nbrUserAndNbrUserInHolidayForADate?dateTime=${convertToOffsetDateTime(formFields.dateDebut)}`, {
                 method: 'GET',
-                mode: "cors",
                 headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-            if (!response.ok) {
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data => data)
-            .catch(error => console.log(error))
-
+                    'Content-Type': 'application/json',
+                },
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            throw error;
+        }
     }
-
 
     /**
      * Requête permet d'envoyer un contact a l'administrateur
@@ -183,19 +143,21 @@ class API {
      * @returns {Promise<EmailJSResponseStatus>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static SendContact(contactState) {
-        //Ajouter les parametres au templates
+    static async SendContact(contactState) {
         const templateParams = {
             from_name: contactState.name,
             from_email: contactState.email,
             to_name: "HolidWeb",
             message: contactState.message,
-            to_email : contactState.to_email
+            to_email: contactState.to_email,
+        };
+        try {
+            return await emailjs.send('service_j0c53oa', 'template_snvzy7p', templateParams, 'u6h54fqSWVWd4Tc1e');
+        } catch (error) {
+            console.error('Error sending contact email:', error);
+            throw error;
         }
-        return emailjs.send('service_j0c53oa', 'template_snvzy7p', templateParams, 'u6h54fqSWVWd4Tc1e');
-
     }
-
 
     /**
      * Requête qui permet d'ajouter une période de vacance
@@ -204,44 +166,28 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static AddVacance(fiedls,lieu) {
-
-
-        const datafiels = {
-            "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
-            "dateFin": convertToOffsetDateTime(fiedls.dateFin),
-            "description": fiedls.description,
-            "lieu": lieu,
-            "nom": fiedls.nom,
-        }
-        return fetch(`/vacance`,
-            {
+    static async AddVacance(fields, lieu) {
+        const data = {
+            dateDebut: convertToOffsetDateTime(fields.dateDebut),
+            dateFin: convertToOffsetDateTime(fields.dateFin),
+            description: fields.description,
+            lieu: lieu,
+            nom: fields.nom,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafiels)
-            }).then(response => {
-            if (!response.ok) {
-
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(
-                data => data
-            )
-            .catch((e) => {
-                console.error('Error during add-Vacance:', e);
-                throw e; // Propagate the error for further handling
-            })
-
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error adding vacation:', error);
+            throw error;
+        }
     }
 
     /**
@@ -250,39 +196,24 @@ class API {
      * @param idVacance l'id du participant
      * @returns {Promise<Response>}retourne une promesse avec le resultat de la requête
      */
-    static async addParticipant(email,idVacance) {
-
-        const datafields = {
-            "email": email
-        }
-        console.log(datafields)
-        return fetch(`/vacance/${idVacance}/participant`,
-            {
+    static async addParticipant(email, idVacance) {
+        const data = {
+            email: email,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/participant`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafields)
-            }).then(response => {
-            if (!response.ok) {
-
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(
-                data => data
-            )
-            .catch((e) => {
-                console.error('Error during add-Participant:', e);
-                throw e; // Propagate the error for further handling
-            })
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error adding participant:', error);
+            throw error;
+        }
     }
 
     /**
@@ -293,38 +224,23 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      */
     static async addParticipantActivite(email, idVacance, idActivite) {
-
-        const datafields = {
-            "email": email
-        }
-        console.log(datafields)
-        return fetch(`/vacance/${idVacance}/activite/${idActivite}/participant`,
-            {
+        const data = {
+            email: email,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/activite/${idActivite}/participant`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafields)
-            }).then(response => {
-            if (!response.ok) {
-
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(
-                data => data
-            )
-            .catch((e) => {
-                console.error('Error during add-Participant Activité:', e);
-                throw e; // Propagate the error for further handling
-            })
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error adding participant to activity:', error);
+            throw error;
+        }
     }
 
     /**
@@ -332,12 +248,15 @@ class API {
      * @param latlng objet contenant la latitude et la longitude
      * @returns {Promise<any>} retoune une promesse avec le resultat de la requête
      */
-    static  currentweather(latlng){
-        return  fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latlng.lat}&lon=${latlng.lon}&cnt=30&units=metric&lang=fr&appid=${API_keyCurrentWeather}`)
-            .then(response => response.json())
-
+    static async currentWeather(latlng) {
+        try {
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latlng.lat}&lon=${latlng.lon}&cnt=30&units=metric&lang=fr&appid=${API_KEY_CURRENT_WEATHER}`);
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error fetching current weather:', error);
+            throw error;
+        }
     }
-
 
     /**
      *
@@ -347,40 +266,28 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static AddActivite(fiedls,lieu,idVac) {
-
-        const datafiels = {
-            "dateDebut": convertToOffsetDateTime(fiedls.dateDebut),
-            "dateFin": convertToOffsetDateTime(fiedls.dateFin),
-            "description": fiedls.description,
-            "lieu": lieu,
-            "nom": fiedls.nom,
-        }
-        console.log(datafiels)
-        return fetch(`/vacance/${idVac}/activite`,
-            {
+    static async AddActivite(fields, lieu, idVac) {
+        const data = {
+            dateDebut: convertToOffsetDateTime(fields.dateDebut),
+            dateFin: convertToOffsetDateTime(fields.dateFin),
+            description: fields.description,
+            lieu: lieu,
+            nom: fields.nom,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVac}/activite`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafiels)
-            }).then(response => {
-            if (!response.ok) {
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data =>data)
-            .catch((e) => {
-                console.error('Error during add-Activite:', e);
-                throw e; // Propagate the error for further handling
-            })
-
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error adding activity:', error);
+            throw error;
+        }
     }
 
     /**
@@ -393,36 +300,24 @@ class API {
      * @constructor
      */
     static async ModifActivite(dateDebut, dateFin, idVacance, idActivite) {
-
-        const datafiels = {
-            "dateDebut": convertToOffsetDateTime(dateDebut),
-            "dateFin": convertToOffsetDateTime(dateFin),
-        }
-        console.log(datafiels)
-        return fetch(`/vacance/${idVacance}/activite/${idActivite}/`,
-            {
+        const data = {
+            dateDebut: convertToOffsetDateTime(dateDebut),
+            dateFin: convertToOffsetDateTime(dateFin),
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/activite/${idActivite}/`, {
                 method: 'PUT',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafiels)
-            }).then(response => {
-            if (!response.ok) {
-                console.log(response)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data =>data)
-            .catch((e) => {
-                console.error('Error during add-Activite:', e);
-                throw e; // Propagate the error for further handling
-            })
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error modifying activity:', error);
+            throw error;
+        }
     }
 
     /**
@@ -433,33 +328,23 @@ class API {
      * @constructor
      */
     static async SendMessage(idVacance, content) {
-
-        const datafiels = {
-            "content": content,
-        }
-        return fetch(`/vacance/${idVacance}/message`,
-            {
+        const data = {
+            content: content,
+        };
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/message`, {
                 method: 'POST',
-                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-
+                    'authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify(
-                    datafiels)
-            }).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data =>data)
-            .catch((e) => {
-                console.error('Error during sendMessage:', e);
-                throw e; // Propagate the error for further handling
-            })
+                body: JSON.stringify(data),
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            throw error;
+        }
     }
 
     /**
@@ -468,32 +353,157 @@ class API {
      * @returns {Promise<Response>} retourne une promesse avec le resultat de la requête
      * @constructor
      */
-    static async GetTheTop100Messages(idVacance) {
-
-        return fetch(`/vacance/${idVacance}/message`,
-            {
+    static async getMessage(idVacance) {
+        try {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/message/100`, {
                 method: 'GET',
-                mode: "cors",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${storedToken()}`
-                }
-            }).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            } else {
-                return response.json()
-            }
-        })
-            .then(data =>data)
-            .catch((e) => {
-                console.error('Error during getMessage:', e);
-                throw e; // Propagate the error for further handling
-            })
+                    'authorization': `Bearer ${getToken()}`,
+                },
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            throw error;
+        }
     }
+
+    static async getDocuments(idVacance) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${idVacance}`, {
+                method: 'GET',
+                headers: {
+                    'authorization': `Bearer ${getToken()}`,
+                },
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            throw error;
+        }
+    }
+
+    static async uploadDocument(formData, idVacance) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${idVacance}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                },
+                body: formData,
+            });
+
+            // Vérifiez si la réponse est OK (status 200-299)
+            if (!response.ok) {
+                const errorText = await response.text(); // Lire la réponse en tant que texte
+                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+            }
+
+            // Si le serveur ne renvoie pas de contenu (status 204 No Content), il ne faut pas essayer de lire le JSON
+            if (response.status === 204) {
+                return { message: 'No content returned' };
+            }
+
+            // Lire la réponse en JSON
+            const data = await response.json();
+            console.log('Upload successful:', data);
+            return data;
+        } catch (error) {
+            console.error('Error uploading document:', error);
+            throw error;
+        }
+    }
+
+    static async trackDocumentDownload(vacanceId, filename) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/${filename}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            // Gérer la réponse
+            if (!response.ok) {
+                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+            }
+
+            return await response
+        } catch (error) {
+            console.error('Error tracking document download:', error);
+            throw error;
+        }
+    }
+
+    static async getDocumentsForActivity(vacanceId,activityId) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}`, {
+                method: 'GET',
+                headers: {
+                    'authorization': `Bearer ${getToken()}`,
+                },
+            });
+            return await handleFetchResponse(response);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            throw error;
+        }
+    }
+
+    static async uploadDocumentForActivity(formData, vacanceId,activityId) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                },
+                body: formData,
+            });
+
+            // Vérifiez si la réponse est OK (status 200-299)
+            if (!response.ok) {
+                const errorText = await response.text(); // Lire la réponse en tant que texte
+                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+            }
+
+            // Si le serveur ne renvoie pas de contenu (status 204 No Content), il ne faut pas essayer de lire le JSON
+            if (response.status === 204) {
+                return { message: 'No content returned' };
+            }
+
+            // Lire la réponse en JSON
+            const data = await response.json();
+            console.log('Upload successful:', data);
+            return data;
+        } catch (error) {
+            console.error('Error uploading document:', error);
+            throw error;
+        }
+    }
+
+    static async trackDocumentDownloadForActivity(vacanceId, activityId, filename) {
+        try {
+            const response = await fetch(`${BASE_URL}/document/vacance/${vacanceId}/activity/${activityId}/${filename}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            // Gérer la réponse
+            if (!response.ok) {
+                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+            }
+
+            return await response
+        } catch (error) {
+            console.error('Error tracking document download:', error);
+            throw error;
+        }
+    }
+
 }
 
-
-
-
-export default API
+export default API;

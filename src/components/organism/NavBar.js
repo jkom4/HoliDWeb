@@ -1,6 +1,7 @@
 import {logout, selectCurrentToken, selectCurrentUser} from "../../features/AuthSlice";
 import {useDispatch, useSelector} from "react-redux"
 import {resetVacances} from "../../features/VacancesSlices";
+import {Link} from "react-router-dom";
 
 
 export default function NavBar() {
@@ -32,10 +33,10 @@ export default function NavBar() {
                         </div>
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
-                                <a href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Accueil</a>
-                                <a href="#vacances" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Vacances</a>
-                                <a href="#agenda" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Agenda</a>
-                                <a href="#contact" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</a>
+                                <Link to="/" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Accueil</Link>
+                                <Link to="#vacances" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Vacances</Link>
+                                <Link to="#agenda" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Agenda</Link>
+                                <Link to="#contact" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Contact</Link>
                             </div>
                         </div>
                     </div>
@@ -44,7 +45,7 @@ export default function NavBar() {
 
                          <div className="relative ml-3">
                             <div>
-                                <a href="/login" className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Se Connecter</a>
+                                <Link  to="/login" className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Se Connecter</Link>
                             </div>
                         </div>
                             :

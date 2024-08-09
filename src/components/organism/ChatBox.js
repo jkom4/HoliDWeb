@@ -16,7 +16,7 @@ export default function ChatBox({item}){
     }, [messagesObj]);
     const initMessages = async () => {
         try {
-            const vacanceWith100Msg = await API.GetTheTop100Messages(item.id); //changer peut-être envoyer juste une liste de messages (API) + SSE
+            const vacanceWith100Msg = await API.getMessage(item.id);
             setMessagesObj(vacanceWith100Msg.messages);
         } catch (err) {
             handleError(err);

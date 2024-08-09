@@ -2,7 +2,7 @@ import './index.css';
 import {
     BrowserRouter,
     Routes,
-    Route, Outlet, Navigate,
+    Route, Outlet, Navigate, HashRouter,
 } from "react-router-dom";
 import SignupPage from './components/pages/SignUpPage';
 import LoginPage from './components/pages/LoginPage';
@@ -16,15 +16,15 @@ function App() {
             : <Outlet />
     };
   return (
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
-            <Route element={<AuthWrapper />}>
+            <Route >
                 <Route path="/" element={<HomePage/>} />
             </Route>
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/signup" element={<SignupPage/>} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
   );
 }
 

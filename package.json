@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "https://studapps.cg.helmo.be:5011/REST_VERD_WABO",
+  "homepage": "https://panoramix.cg.helmo.be/~e200851/holidWeb",
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
     "@headlessui/react": "^1.7.17",
@@ -13,6 +14,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^9.8.6",
+    "axios": "^1.7.3",
     "emailjs-com": "^3.2.0",
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",

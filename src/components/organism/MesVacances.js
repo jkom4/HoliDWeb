@@ -4,6 +4,7 @@ import DetailsVacances from "./DetailsVacances";
 import {selectVacances} from "../../features/VacancesSlices";
 import Modal from "./Modal";
 import ChatBox from "./ChatBox";
+import Document from "./Document";
 
 /**
  * Composant permettant d'afficher les vacances
@@ -139,7 +140,11 @@ const MesVacances = () => {
                                     {vacance.description}
                                 </p>
                             </a>
-                            <Modal buttonToggle="Message(s)" title={vacance.nom}> <ChatBox item={vacance}/></Modal>
+                            <div className="space-x-3">
+                                <Modal buttonToggle="Message(s)" title={vacance.nom}> <ChatBox item={vacance}/></Modal>
+                                <Modal buttonToggle="Document(s)" title={vacance.nom}> <Document item={vacance}/></Modal>
+                            </div>
+
                         </div>
                         {selectedItem === vacance && <DetailsVacances item={vacance}/>}
 

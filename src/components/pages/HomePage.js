@@ -45,6 +45,7 @@ export default function HomePage() {
         <Home
             navbar={<NavBar/>}
             alertMessage ={
+
             <>
                 {errMsg && <Alert message={errMsg} color="red"/>}
                 {infoMsg && <Alert message={infoMsg} color="green"/>}

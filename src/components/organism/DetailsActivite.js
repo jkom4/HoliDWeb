@@ -5,6 +5,8 @@ import {useSelector} from "react-redux";
 import {selectCurrentUser} from "../../features/AuthSlice";
 import API from "../../services/API";
 import {addActivites} from "../../features/VacancesSlices";
+import Document from "./Document";
+import DocumentActivite from "./DocumentActivite";
 
 /**
  * Composant permettant  d'afficher les details d'une activité
@@ -102,7 +104,7 @@ const DetailsActivite = ({item}) => {
     });
     useEffect(() => {
         // Mettre à jour dateHeureActivite lorsque selectedItem change
-        if(selectedItem){
+        if (selectedItem) {
             setDateHeureActivite(
                 {
                     dateDebut: new Date(selectedItem.dateDebut).toLocaleDateString(),
@@ -114,13 +116,13 @@ const DetailsActivite = ({item}) => {
         }
 
 
-            }, [selectedItem]);
+    }, [selectedItem]);
 
 
     //permet de recuperer la valeur de la date et l'heure d'une activité
     const handleChange = (e) => {
-        const { id, value } = e.target;
-        setDateHeureActivite((prevFilters) => ({ ...prevFilters, [id]: value }));
+        const {id, value} = e.target;
+        setDateHeureActivite((prevFilters) => ({...prevFilters, [id]: value}));
     };
 
     const handleModifActivite = async () => {
@@ -139,7 +141,7 @@ const DetailsActivite = ({item}) => {
         }
         try {
             const idVac = item.id
-            const newActivite = await API.ModifActivite(dateDebut,dateFin, idVac, selectedItem.id);
+            const newActivite = await API.ModifActivite(dateDebut, dateFin, idVac, selectedItem.id);
             dispatch(addActivites({newActivite, idVac}));
             // Other logic after successful sign-in
             // navigate('/')
@@ -169,13 +171,17 @@ const DetailsActivite = ({item}) => {
         }
         let events = ``
         //item.activites
-        activitesFiltrees.forEach((activite) => {if (activite.participants.some(participant => participant.id === user.id)) {events+=(eventBase(activite.nom, activite.description, activite.dateDebut, activite.dateFin, activite.lieu.latitude, activite.lieu.longitude))}})
+        activitesFiltrees.forEach((activite) => {
+            if (activite.participants.some(participant => participant.id === user.id)) {
+                events += (eventBase(activite.nom, activite.description, activite.dateDebut, activite.dateFin, activite.lieu.latitude, activite.lieu.longitude))
+            }
+        })
         const icalData = `BEGIN:VCALENDAR\r\n`
             + `VERSION:2.0\r\n`
             + `PRODID://HolyD//FR\r\n`
             + `${events}`
             + `END:VCALENDAR`
-        const blob = new Blob([icalData], { type: 'text/calendar;charset=utf-8' });
+        const blob = new Blob([icalData], {type: 'text/calendar;charset=utf-8'});
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -188,10 +194,11 @@ const DetailsActivite = ({item}) => {
     return (<div className="bg-white pb-4 px-4 rounded-md w-full">
             {isAlternateActivite ? <button type="button" onClick={toggleActiviteComponent} className="text-white inline-flex items-center m-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
                                         dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-toggle="crud-modal">
-                <img height="25" width="25"
-                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC" alt=""/>
-                Retour
-            </button> :
+                    <img height="25" width="25"
+                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAlklEQVR4nO3ZsQ3CQBQE0d+ET9B/JUQIBAkElDPI4gJEA+w/zavgVuPAPldJigcM4A6cqvmIJx+X6gjYgMcc8QIO1Y0jUlgihSVSWCKFJVJYIgW+AIbAEiFYocQOuM0R+2fqqK5YaMj282gdqyscEwrLhMIyobBMKMukskwqy6SyTKrVyoyv39PX6myO2e8Azv8+i7SqN6spz99oA0EqAAAAAElFTkSuQmCC"
+                         alt=""/>
+                    Retour
+                </button> :
                 <div className="inline-flex">
                     <button type="button" onClick={toggleActiviteComponent} className="text-white mt-5 ml-5 mb-5 mr-1 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
                                             dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -206,9 +213,10 @@ const DetailsActivite = ({item}) => {
                     </button>
                     <button type="button" onClick={handleImportAgenda} className="text-white mt-5 mb-5 mr-5 ml-1 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
                                             dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="me-1 -ms-1 w-5 h-5" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth="2"/>
-                            <path  strokeWidth="2" d="M8 2v4M16 2v4M3 10h18"/>
+                            <path strokeWidth="2" d="M8 2v4M16 2v4M3 10h18"/>
                         </svg>
                         Importer
                     </button>
@@ -219,7 +227,7 @@ const DetailsActivite = ({item}) => {
                     <div className="w-full flex justify-end px-2 mt-2 ">
                         <span className="mx-4 font-medium">Ordre</span>
                         <div className="w-full inline-flex sm:w-24  mr-10">
-                        <select
+                            <select
                                 className="leading-snug border border-gray-300 block w-full  bg-gray-100 text-sm text-gray-600 py-1 px-4 pl-8 rounded-lg"
                                 value={tri}
                                 onChange={handleTriChange}>
@@ -274,91 +282,122 @@ const DetailsActivite = ({item}) => {
                                         </svg>}
                                     </td>
                                 </tr>
-                                {selectedItem === activite && <div className="flex gap-x-2 my-1 ">
-                                    <div className="block">
-                                        <div className="pt-1">
-                                            <p className="font-light">Titre</p>
-                                            <p className="font-medium tracking-more-wider h-6">{activite.nom}</p>
-                                        </div>
-                                        <div className="pt-1">
-                                            <p className="font-light">Description</p>
-                                            <p className="font-medium tracking-more-wider h-6">{activite.description}</p>
-                                        </div>
-                                        <div className="pt-1">
-                                            <p className="font-light">Lieu</p>
-                                            <p className="font-medium tracking-more-wider h-6">{`${activite.lieu.rue} ${activite.lieu.rueNumero},  ${activite.lieu.codePostal}  ${activite.lieu.ville}  ${activite.lieu.pays}`}</p>
-                                        </div>
-                                        <div className="flex gap-x-2 my-1">
-                                            <div className="block">
-                                                <label className="font-light">Date debut:</label>
-                                                <input type="text"
-                                                       onChange={handleChange}  id="dateDebut"
-                                                       className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="10" placeholder="DD/MM/YY"
-                                                       value={dateHeureActivite.dateDebut}/>
+                                {selectedItem === activite &&
+                                    <tr >
+                                        {/* Bloc 1 */}
+                                        <td className="flex-1 p-4">
+                                            <div className="pt-1">
+                                                <p className="font-light">Titre</p>
+                                                <p className="font-medium tracking-wider h-6">{activite.nom}</p>
                                             </div>
-                                            <div className="block">
-                                                <label className="font-light">Heure</label>
-                                                <input type="text"
-                                                       onChange={handleChange}  id="heureDebut"
-                                                       className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="5" placeholder="12:20"
-                                                       value={dateHeureActivite.heureDebut}/>
+                                            <div className="pt-1">
+                                                <p className="font-light">Description</p>
+                                                <p className="font-medium tracking-wider h-6">{activite.description}</p>
                                             </div>
-                                        </div>
-                                        <div className="flex gap-x-2 my-1">
-                                            <div className="block">
-                                                <label className="font-light">Date fin:</label>
-                                                <input type="text"
-                                                       onChange={handleChange}  id="dateFin"
-                                                       className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="10" placeholder="DD/MM/YY"
-                                                       value={dateHeureActivite.dateFin}/>
+                                            <div className="pt-1 mb-6">
+                                                <p className="font-light">Lieu</p>
+                                                <p className="font-medium tracking-wider h-6">{`${activite.lieu.rue} ${activite.lieu.rueNumero}, ${activite.lieu.codePostal} ${activite.lieu.ville} ${activite.lieu.pays}`}</p>
                                             </div>
-                                            <div className="block">
+                                            <div className="flex gap-x-2 my-2 mb-2">
+                                                <div>
+                                                    <label className="font-light">Date début:</label>
+                                                    <input
+                                                        type="text"
+                                                        onChange={handleChange}
+                                                        id="dateDebut"
+                                                        className="h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg placeholder:text-muted-foreground focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-600"
+                                                        maxLength="10"
+                                                        placeholder="DD/MM/YY"
+                                                        value={dateHeureActivite.dateDebut}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="font-light">Heure</label>
+                                                    <input
+                                                        type="text"
+                                                        onChange={handleChange}
+                                                        id="heureDebut"
+                                                        className="h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg placeholder:text-muted-foreground focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-600"
+                                                        maxLength="5"
+                                                        placeholder="12:20"
+                                                        value={dateHeureActivite.heureDebut}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-x-2 my-1">
+                                                <div>
+                                                    <label className="font-light">Date fin:</label>
+                                                    <input
+                                                        type="text"
+                                                        onChange={handleChange}
+                                                        id="dateFin"
+                                                        className="h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg placeholder:text-muted-foreground focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-600"
+                                                        maxLength="10"
+                                                        placeholder="DD/MM/YY"
+                                                        value={dateHeureActivite.dateFin}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="font-light">Heure</label>
+                                                    <input
+                                                        type="text"
+                                                        onChange={handleChange}
+                                                        id="heureFin"
+                                                        className="h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg placeholder:text-muted-foreground focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-600"
+                                                        maxLength="5"
+                                                        placeholder="12:20"
+                                                        value={dateHeureActivite.heureFin}
+                                                    />
+                                                </div>
+                                            </div>
+                                            {errMsg && (
+                                                <p className="text-red-500 mt-2" aria-live="assertive">{errMsg}</p>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={handleModifActivite}
+                                                className="mt-4 px-5 py-2.5 text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 text-sm font-medium"
+                                            >
+                                                Modifier
+                                            </button>
+                                        </td>
 
-                                                <label className="font-light">Heure</label>
-                                                <input type="text"
-                                                       onChange={handleChange}  id="heureFin"
-                                                       className="flex h-8 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                                                       maxLength="5" placeholder="12:20"
-                                                       value={dateHeureActivite.heureFin}/>
-                                            </div>
-                                        </div>
-                                        <p  className={errMsg ? "errmsg text-red-500" : "offscreen"}  aria-live="assertive" >{errMsg}</p>
-                                        <button type="button" onClick={handleModifActivite} className="text-white m-5 inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:green-400
-                                        dark:hover:bg-gray-500 " data-modal-toggle="crud-modal">Modifier
-                                        </button>
-                                    </div>
-                                    <div className="block">
-                                        {//Verifier si le user participe deja
-                                            activite.participants.some(participant => participant.id === user.id) ?
-                                                <button type="button"
-                                                        className="text-white m-5 inline-flex items-center bg-gray-300 mx-10 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
-                                                        data-modal-toggle="crud-modal">
+                                        {/* Bloc 2 */}
+                                        <td className="flex-1 p-4">
+                                            {activite.participants.some(participant => participant.id === user.id) ? (
+                                                <button
+                                                    type="button"
+                                                    className="mt-5 px-5 py-2.5 text-white bg-gray-300 rounded-lg font-medium text-sm"
+                                                    disabled
+                                                >
                                                     Participe déjà
-                                                </button> :
-                                                <button type="button" onClick={() => handleParticipe(activite)}
-                                                        className="text-white m-5 inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 mx-10 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:green-600
-                                        dark:hover:bg-green-800 dark:focus:ring-blue-800"
-                                                        data-modal-toggle="crud-modal">
-                                                    <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor"
-                                                         viewBox="0 0 20 20"
-                                                         xmlns="http://www.w3.org/2000/svg">
-                                                        <path fillRule="evenodd"
-                                                              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                                              clipRule="evenodd"></path>
-                                                    </svg>
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleParticipe(activite)}
+                                                    className="mt-5 px-5 py-2.5 text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 text-sm font-medium"
+                                                >
                                                     Participer
-                                                </button>}
+                                                </button>
+                                            )}
 
-                                        <div>
-                                            <h2>Liste de participants</h2>
-                                            {activite.participants.map(participant => (
-                                            <p className="m-2 font-medium tracking-more-wider h-6 "> {participant.prenom + " " + participant.nom}</p>))}
-                                        </div>
-                                    </div>
-                                </div>}
+                                            <div>
+                                                <h2 className="font-bold text-lg mt-4">Liste des participants</h2>
+                                                {activite.participants.map(participant => (
+                                                    <p key={participant.id} className="m-2 font-medium tracking-wider h-6">{participant.prenom} {participant.nom}</p>
+                                                ))}
+                                            </div>
+                                        </td>
+
+                                        {/* Bloc 3 */}
+                                        <td className="flex-1 p-4" colSpan="2">
+                                            <DocumentActivite item={item} activity={activite} />
+                                        </td>
+                                    </tr>
+
+
+                                }
                             </>))}
                             </tbody>
                         </table>

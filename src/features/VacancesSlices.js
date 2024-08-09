@@ -14,7 +14,7 @@ export const vacancesSlice = createSlice({
         },
 
         addVacances: (state, action) => {
-            const newVacance = action.payload;
+            const newVacance  = action.payload;
             console.log(newVacance)
             // Recherchez l'index de l'objet existant dans le tableau
             const indexExistante = state.vacances.findIndex(vacance => vacance.id === newVacance.id);
