@@ -124,7 +124,7 @@ class API {
      */
     static async nbrUser(formFields) {
         try {
-            const response = await fetch(`${BASE_URL}/user/nbrUserAndNbrUserInHolidayForADate?dateTime=${convertToOffsetDateTime(formFields.dateDebut)}`, {
+            const response = await fetch(`${BASE_URL}/user/byHoliday?dateTime=${convertToOffsetDateTime(formFields.dateDebut)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
