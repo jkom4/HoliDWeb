@@ -128,7 +128,6 @@ class API {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${getToken()}`,
                 },
             });
             return await handleFetchResponse(response);
