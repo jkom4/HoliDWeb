@@ -128,6 +128,7 @@ class API {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'authorization': `Bearer ${getToken()}`,
                 },
             });
             return await handleFetchResponse(response);
@@ -355,7 +356,7 @@ class API {
      */
     static async getMessage(idVacance) {
         try {
-            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/message/100`, {
+            const response = await fetch(`${BASE_URL}/vacance/${idVacance}/message`, {
                 method: 'GET',
                 headers: {
                     'authorization': `Bearer ${getToken()}`,
@@ -395,19 +396,8 @@ class API {
 
             // Vérifiez si la réponse est OK (status 200-299)
             if (!response.ok) {
-                const errorText = await response.text(); // Lire la réponse en tant que texte
-                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+                console.log('Upload successful');
             }
-
-            // Si le serveur ne renvoie pas de contenu (status 204 No Content), il ne faut pas essayer de lire le JSON
-            if (response.status === 204) {
-                return { message: 'No content returned' };
-            }
-
-            // Lire la réponse en JSON
-            const data = await response.json();
-            console.log('Upload successful:', data);
-            return data;
         } catch (error) {
             console.error('Error uploading document:', error);
             throw error;
@@ -463,19 +453,8 @@ class API {
 
             // Vérifiez si la réponse est OK (status 200-299)
             if (!response.ok) {
-                const errorText = await response.text(); // Lire la réponse en tant que texte
-                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+                console.log('Upload successful:');
             }
-
-            // Si le serveur ne renvoie pas de contenu (status 204 No Content), il ne faut pas essayer de lire le JSON
-            if (response.status === 204) {
-                return { message: 'No content returned' };
-            }
-
-            // Lire la réponse en JSON
-            const data = await response.json();
-            console.log('Upload successful:', data);
-            return data;
         } catch (error) {
             console.error('Error uploading document:', error);
             throw error;

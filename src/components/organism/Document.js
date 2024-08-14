@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import API from '../../services/API';
 
 export default function Document({ item }) {
@@ -8,7 +8,7 @@ export default function Document({ item }) {
     const [error, setError] = useState(null);
 
     // Fonction pour récupérer les documents depuis l'API
-    const fetchDocuments = async () => {
+    const fetchDocuments = useCallback(async () => {
         setLoading(true);
         try {
             const response = await API.getDocuments(item.id);
@@ -19,7 +19,7 @@ export default function Document({ item }) {
         } finally {
             setLoading(false);
         }
-    };
+    },[item.id]);
 
     // Fonction pour gérer la sélection de fichier
     const handleFileChange = (event) => {
@@ -40,7 +40,6 @@ export default function Document({ item }) {
                 fetchDocuments();
             } catch (err) {
                 console.error('Error uploading document:', err);
-                setError('Erreur lors de l\'ajout du document');
             } finally {
                 setLoading(false);
             }
@@ -76,7 +75,7 @@ export default function Document({ item }) {
 
     useEffect(() => {
         fetchDocuments();
-    }, [item]);
+    }, [item, fetchDocuments]);
 
     return (
         <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md">

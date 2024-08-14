@@ -16,13 +16,11 @@ const AddVacanceForm = () => {
         const [geocodeResults, setGeocodeResults] = useState(null);
         const dispatch = useDispatch();
 
-    const handleSignIn = async (formState) => {
+    const handleAddVacance = async (formState) => {
         try {
 
             const newVacance = await API.AddVacance(formState,geocodeResults);
             dispatch(addVacances({ ...newVacance }));
-            // Other logic after successful sign-in
-           // navigate('/')
         } catch (err) {
             if (err.response === 400) {
                 setErrMsg('Missing Username or Password');
@@ -81,7 +79,7 @@ const AddVacanceForm = () => {
 
             <CustomForm  fieldsState = {fieldsState}
                          fields = {fields}
-                         actionSubmit={handleSignIn}
+                         actionSubmit={handleAddVacance}
                          textSubmit = "Ajouter"
                          isSignUp={false}
             />

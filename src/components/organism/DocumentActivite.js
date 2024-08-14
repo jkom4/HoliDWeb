@@ -40,7 +40,6 @@ export default function DocumentActivite({ item , activity }) {
                 fetchDocuments();
             } catch (err) {
                 console.error('Error uploading document:', err);
-                setError('Erreur lors de l\'ajout du document');
             } finally {
                 setLoading(false);
             }
