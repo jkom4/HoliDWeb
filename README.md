@@ -10,6 +10,7 @@
 - **Recherche de destinations** : Permet de rechercher et sélectionner des destinations via l'API Google Places.
 - **Suivi des activités** : Affichage des activités prévues pour chaque voyage.
 - **Prévisions météorologiques** : Affichage des prévisions météo directement dans l'interface.
+- **Gestion des documents de voyage** : les utilisateurs peuvent ajouter ou telecharger des documents.
 
 ## Technologies utilisées
 
