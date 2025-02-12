@@ -47,3 +47,8 @@ Pour exécuter les tests end-to-end avec **Cypress**, utilisez la commande suiva
 
 ```bash
 npm run cypress:open
+```
+or
+```bash
+npx cypress run
+```
